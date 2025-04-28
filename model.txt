@@ -1,0 +1,53 @@
+layers.0.Oh.weight torch.Size([6, 256]) True
+layers.0.Oh.bias torch.Size([6]) True
+layers.0.norm.weight torch.Size([6]) True
+layers.0.norm.bias torch.Size([6]) True
+layers.0.residual.ffn.linear1.weight torch.Size([12, 6]) True
+layers.0.residual.ffn.linear1.bias torch.Size([12]) True
+layers.0.residual.ffn.linear2.weight torch.Size([6, 12]) True
+layers.0.residual.ffn.linear2.bias torch.Size([6]) True
+layers.0.residual.norm.weight torch.Size([6]) True
+layers.0.residual.norm.bias torch.Size([6]) True
+layers.0.attention.Wq.weight torch.Size([256, 6]) True
+layers.0.attention.Wq.bias torch.Size([256]) True
+layers.0.attention.Wk.weight torch.Size([256, 6]) True
+layers.0.attention.Wk.bias torch.Size([256]) True
+layers.0.attention.Wv.weight torch.Size([256, 6]) True
+layers.0.attention.Wv.bias torch.Size([256]) True
+layers.0.attention.We.weight torch.Size([256, 3]) True
+layers.0.attention.We.bias torch.Size([256]) True
+
+...
+
+
+layers.4.Oh.weight torch.Size([6, 256]) True
+layers.4.Oh.bias torch.Size([6]) True
+layers.4.norm.weight torch.Size([6]) True
+layers.4.norm.bias torch.Size([6]) True
+layers.4.residual.ffn.linear1.weight torch.Size([12, 6]) True
+layers.4.residual.ffn.linear1.bias torch.Size([12]) True
+layers.4.residual.ffn.linear2.weight torch.Size([6, 12]) True
+layers.4.residual.ffn.linear2.bias torch.Size([6]) True
+layers.4.residual.norm.weight torch.Size([6]) True
+layers.4.residual.norm.bias torch.Size([6]) True
+layers.4.attention.Wq.weight torch.Size([256, 6]) True
+layers.4.attention.Wq.bias torch.Size([256]) True
+layers.4.attention.Wk.weight torch.Size([256, 6]) True
+layers.4.attention.Wk.bias torch.Size([256]) True
+layers.4.attention.Wv.weight torch.Size([256, 6]) True
+layers.4.attention.Wv.bias torch.Size([256]) True
+layers.4.attention.We.weight torch.Size([256, 3]) True
+layers.4.attention.We.bias torch.Size([256]) True
+
+
+linear.weight torch.Size([256, 6]) True
+linear.bias torch.Size([256]) True
+norm.weight torch.Size([5]) True
+norm.bias torch.Size([5]) True
+
+out_layer.0.weight torch.Size([10, 5]) True
+out_layer.0.bias torch.Size([10]) True
+out_layer.2.weight torch.Size([5, 10]) True
+out_layer.2.bias torch.Size([5]) True
+out_layer.4.weight torch.Size([7, 5]) True
+out_layer.4.bias torch.Size([7]) True
