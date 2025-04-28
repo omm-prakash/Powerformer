@@ -1,0 +1,5 @@
+*.err_
+*.sout_
+debug
+__pycache__
+fast.py

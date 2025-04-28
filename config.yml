@@ -1,0 +1,50 @@
+n_workers: 9
+random_seed: 11
+result_dir: '/scratch/opsahoo.eee20.itbhu/Thesis'
+test_mode: false
+desc: "testing multi-gpu training"
+
+dataset:
+  data_path: '/scratch/opsahoo.eee20.itbhu/Thesis/SmartGrid Datasets'
+  data_names: ['microgrid_steady_state_rms', 'microgrid_fault_dataset_rms'] #, 'All_DER_outage_grid_fault_CSV', 'microgrid_steady_state_rms_islanded', 'All_DER_outage_islanded_fault_CSV']
+
+  window_size: 50
+  stride: 25
+  n_nodes: 5
+  n_edges: 5
+  n_edge_features: 3
+  n_node_features: 3
+  num_fault_types: 7
+  case_range: [1,2700]  # Using a list instead of a tuple
+  data_portion_from_end: 0.4
+
+  test_ratio: 0.2
+  k: 3 # eigen vectors to consider for PE
+
+model:
+  d_model: 256
+  n_heads: 8
+  dropout: 0.3
+  use_bias: true
+  n_layers: 3
+
+training:
+  learning_rate: 0.0001
+  label_smoothing: 0
+  epochs: 200
+  validation: true
+  val_frequency: 5
+  save_model: true
+  save_frequency: 5
+
+  l2_regularize: true
+  l2_lambda: 0.001
+
+  freeze_attentions: false
+  freeze_attention_layers: [0,1,2] # list belongs to {0, 1, ..., n_layers-1}
+
+  retrain_model: true
+  pretrained_model_path: 'results/expt-39| 2025-04-25 00:06/weights/epoch-95.pt'
+
+  multi_gpu: false
+
