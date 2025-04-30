@@ -32,7 +32,7 @@ def testModel(test_dataloader, model, device, criteria):
     out = model(torch.cat([data.x, pe], dim=2), data.edge_index, data.edge_attr).cpu()
     data = data.cpu()   
     print('\nSample test') 
-    print('> model output', out.detach().numpy())
+    print('> model output', softmax(out.detach().numpy()))
     print(f'> predicted class: {out.argmax()}, actual class: {data.y[0]-1}')
 
     test_loss = 0
@@ -66,7 +66,8 @@ def prepareData(config, logger, rank=None, world_size=None):
                           n_node_features=config['dataset']['n_node_features'],
                           case_range=config['dataset']['case_range'], 
                           stride=config['dataset']['stride'],
-                          data_portion=config['dataset']['data_portion_from_end'])
+                          data_portion=config['dataset']['data_portion_from_end'],
+                          ignored_fault_locations=config['dataset']['ignored_fault_locations'])
     
     dataset = transformData(k=config['dataset']['k'], dataset=dataset)
     logger.info(f'Dataset Size: {len(dataset)}')

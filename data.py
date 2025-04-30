@@ -30,7 +30,8 @@ def extractData(data_path:str,
                 n_nodes:int, 
                 n_edges:int, 
                 n_node_features:int, 
-                n_edge_features:int, 
+                n_edge_features:int,
+                ignored_fault_locations:list, 
                 case_range=None,
                 data_portion=0.5):
     
@@ -46,8 +47,6 @@ def extractData(data_path:str,
     current_pattern = re.compile(r'.*/ICaseNum_rms_\d+Results\.csv')
     # voltage_pattern = re.compile(r'VCaseNum_rms_\d+Results.csv')
     edge_index = torch.tensor([
-                    # [0, 1, 1, 2, 4, 1, 3, 2, 4, 3],
-                    # [1, 3, 2, 4, 3, 0, 1, 1, 2, 4]
                     [0, 1, 1, 2, 4],
                     [1, 3, 2, 4, 3]
                 ])
@@ -59,29 +58,40 @@ def extractData(data_path:str,
     for file in data_files: 
         if current_pattern.fullmatch(file):
             case_number = int(re.findall(f'\d+', file)[-1])
-
             if (case_range is not None) and (not case_range[0]<=case_number<=case_range[1]):
                 continue
 
             current_df = pd.read_csv(file, index_col=False)
+            fault_location = current_df.FAULT_LINE.loc[0].astype(int)            
+            if fault_location in ignored_fault_locations:
+                continue
             voltage_df = pd.read_csv(file.replace('ICaseNum', 'VCaseNum'), index_col=False)
 
-            edge_data = torch.tensor(current_df[edge_features].apply(lambda col: col.fillna(col.mean()), axis=0).to_numpy())
-            edge_data = edge_data[int((1-data_portion)*edge_data.size(0)):]
+            complete_edge_data = torch.tensor(current_df[edge_features].apply(lambda col: col.fillna(col.mean()), axis=0).to_numpy())
+            steady_state_edge_data = complete_edge_data[:100]
+            steady_state_edge_data = steady_state_edge_data.unfold(0, window_size, stride).view(-1, n_edges, n_edge_features, window_size).transpose(-1, -2)
+            steady_state_edge_data = steady_state_edge_data.to(torch.float64)
+
+            edge_data = complete_edge_data[int((1-data_portion)*complete_edge_data.size(0)):]
             edge_data = edge_data.unfold(0, window_size, stride).view(-1, n_edges, n_edge_features, window_size).transpose(-1, -2)#.view(-1, n_edges*window_size, n_edge_features) # (-1, edges, time, edge_features)
             edge_data = edge_data.to(torch.float64)
             # print('Edge data shape:', edge_data.size())
 
-            node_data = torch.tensor(voltage_df[node_features].apply(lambda col: col.fillna(col.mean()), axis=0).to_numpy())
-            node_data = node_data[int((1-data_portion)*node_data.size(0)):]
+            complete_node_data = torch.tensor(voltage_df[node_features].apply(lambda col: col.fillna(col.mean()), axis=0).to_numpy())
+            steady_state_node_data = complete_node_data[:100]
+            steady_state_node_data = steady_state_node_data.unfold(0, window_size, stride).view(-1, n_nodes, n_node_features, window_size).transpose(-1, -2)
+            steady_state_node_data = steady_state_node_data.to(torch.float64) 
+
+            node_data = complete_node_data[int((1-data_portion)*complete_node_data.size(0)):]
 
             node_data = node_data\
                 .unfold(0, window_size, stride)\
                     .view(-1, n_nodes, n_node_features, window_size)\
                         .transpose(-1, -2) # (-1, nodes, time, node_features)
-                            # .contiguous().view(-1, n_nodes*window_size, n_node_features)
             node_data = node_data.to(torch.float64)
             # print('Node data shape:', node_data.size())
+
+            steady_state_labels = torch.tensor(np.repeat(1, steady_state_node_data.size(0), axis=0)).to(torch.long)
 
             labels = torch.tensor(np.repeat(current_df.FAULT_TYPE.loc[0].astype(int), node_data.size(0), axis=0)) # (-1)
             labels = labels.to(torch.long)
@@ -90,6 +100,10 @@ def extractData(data_path:str,
             edge_dataset = torch.concat((edge_dataset, edge_data), dim=0)
             node_dataset = torch.concat((node_dataset, node_data), dim=0)
             label_dataset = torch.concat((label_dataset, labels), dim=0)
+
+            edge_dataset = torch.concat((edge_dataset, steady_state_edge_data), dim=0)
+            node_dataset = torch.concat((node_dataset, steady_state_node_data), dim=0)
+            label_dataset = torch.concat((label_dataset, steady_state_labels), dim=0)
 
     edge_memory = (edge_dataset.element_size() * edge_dataset.nelement()) / (1024 ** 2)
     print(f'\nEdge Dataset: {edge_dataset.size()}, {edge_memory:.2f} MB')
