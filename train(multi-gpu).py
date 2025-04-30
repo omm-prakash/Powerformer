@@ -19,7 +19,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data.distributed import DistributedSampler
 from torch.distributed import init_process_group, destroy_process_group
 
-from layers import GraphTransformer
+from layers import GraphTransformer, PowerFormer
 from data import extractData, transformData
 from utils import *
 
@@ -32,7 +32,7 @@ def testModel(test_dataloader, model, device, criteria):
     out = model(torch.cat([data.x, pe], dim=2), data.edge_index, data.edge_attr).cpu()
     data = data.cpu()   
     print('\nSample test') 
-    print('> model output', softmax(out.detach().numpy()))
+    print('> model output', list(softmax(out.detach(), dim=0)))
     print(f'> predicted class: {out.argmax()}, actual class: {data.y[0]-1}')
 
     test_loss = 0
@@ -67,7 +67,8 @@ def prepareData(config, logger, rank=None, world_size=None):
                           case_range=config['dataset']['case_range'], 
                           stride=config['dataset']['stride'],
                           data_portion=config['dataset']['data_portion_from_end'],
-                          ignored_fault_locations=config['dataset']['ignored_fault_locations'])
+                          ignored_fault_locations=config['dataset']['ignored_fault_locations'],
+                          task=config['task'])
     
     dataset = transformData(k=config['dataset']['k'], dataset=dataset)
     logger.info(f'Dataset Size: {len(dataset)}')
@@ -109,7 +110,16 @@ def load_model(model, optimizer, logger, config):
     logger.info(f"Loading pretrained model from: {config['training']['pretrained_model_path']}")
     logger.info(f"> Used data info:: names: {checkpoint['data_names']}, range: {checkpoint['case_range']}")
     logger.info(f"> epoch:{checkpoint['epoch']}:: train_loss:{checkpoint['loss']} | train_f1_score: {checkpoint['f1_score']}")
-    model.load_state_dict(checkpoint['model'])
+
+    if config['training']['only_load_attention']:
+        model_state = model.state_dict()
+        filtered_dict = {}
+        for k, v in checkpoint['model'].items():
+            if k in model_state and v.shape == model_state[k].shape and ('layers' in k):
+                filtered_dict[k] = v
+        model_state.update(filtered_dict)
+    
+    model.load_state_dict(model_state)
     optimizer.load_state_dict(checkpoint['optim'])
 
     return model, optimizer
@@ -131,14 +141,14 @@ def trainModel(config, train_dataloader, test_dataloader, model, device, logger,
     train_losses, val_losses = [], []
     train_f1_scores, val_f1_scores = [], []
     logger.info('========== Starting model training. ==========')
-    for epoch in range(config['training']['epochs']):
+    for epoch in range(1, config['training']['epochs']+1):
         torch.cuda.empty_cache()
         epoch_losses = 0
         model.train()        
         preds, actuals, i = [], [], 0
         
         ## train model 
-        for batch in tqdm(train_dataloader, desc=f'epoch-{epoch}:: train'):
+        for batch in train_dataloader:
             x = batch.x.to(device) # shape: (n_nodes, time, node_features)
             laplacian_pe = batch.laplacian_eigenvector_pe.unsqueeze(1).expand(-1, config['dataset']['window_size'], -1).to(device)
             x = torch.cat([x, laplacian_pe], dim=2) # shape: (n_nodes, time, node_features+PE)
@@ -158,8 +168,6 @@ def trainModel(config, train_dataloader, test_dataloader, model, device, logger,
 
             preds.append(int(out.argmax()))
             actuals.append(int(batch.y[0])-1)
-            # preds.append(out.cpu().argmax())
-            # actuals.append(int(batch.y.cpu()[0]-1))
             i += 1
             logger.debug(f'epoch: {epoch+1}-batch: {i+1} :: loss: {loss.item()}')
 
@@ -349,7 +357,7 @@ def runProcess(config):
     logger.info('')
     logger.info('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
     logger.info(f'++++++++++++++++++++++++++ Experiment: {expt} ++++++++++++++++++++++++++')
-    logger.info(f'Description: {config['desc']}')
+    logger.info(f"Description: {config['desc']}")
 
     logger.info('')
     logger.info('Dataset info.')
@@ -359,16 +367,18 @@ def runProcess(config):
     logger.info('')
     logger.info('Loading model.')
     ## load model
-    model = GraphTransformer(d_model=config['model']['d_model'],
-                             num_nodes=config['dataset']['n_nodes'],
-                             num_heads=config['model']['n_heads'],
-                             node_features=config['dataset']['n_node_features']+config['dataset']['k'],
-                             edge_features=config['dataset']['n_edge_features'],
-                             dropout=config['model']['dropout'],
-                             use_bias=config['model']['use_bias'],
-                             num_layers=config['model']['n_layers'], 
-                             num_fault_types=config['dataset']['num_fault_types'])
-    
+    model = PowerFormer(d_model=config['model']['d_model'],
+                              num_nodes=config['dataset']['n_nodes'],
+                              num_heads=config['model']['n_heads'],
+                              node_features=config['dataset']['n_node_features']+config['dataset']['k'],
+                              edge_features=config['dataset']['n_edge_features'],
+                              dropout=config['model']['dropout'],
+                              use_bias=config['model']['use_bias'],
+                              num_layers=config['model']['n_layers'], 
+                              num_fault_types=config['dataset']['num_fault_types'],
+                              num_fault_locations=config['dataset']['num_fault_locations'],
+                              task = config['task'])
+
     model = model.to(torch.float64)
     if not config['training']['retrain_model']:
         model.initialize_weights()

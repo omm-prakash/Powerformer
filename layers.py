@@ -112,7 +112,7 @@ class GraphTransformerLayer(nn.Module):
         return x 
     
 class GraphTransformer(nn.Module):
-    def __init__(self, d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, num_fault_types, *args, **kwargs):
+    def __init__(self, d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.layers = nn.ModuleList([
@@ -122,15 +122,7 @@ class GraphTransformer(nn.Module):
 
         self.linear = nn.Linear(node_features, d_model)
         self.norm = nn.LayerNorm(num_nodes)
-        self.out_layer = nn.Sequential(
-            nn.Linear(num_nodes, 2*num_nodes),
-            nn.SiLU(),
-            nn.Linear(2*num_nodes, num_nodes),
-            nn.Dropout(dropout),
-            nn.SiLU(),
-            nn.Linear(num_nodes, num_fault_types)
-        )
-
+    
     def forward(self, x, edge_index, edge_attr):
 
         for layer in self.layers:
@@ -141,7 +133,6 @@ class GraphTransformer(nn.Module):
         # x = torch.sum(x, dim=-1) # (n_nodes,)
         x = x.mean(dim=-1) # (n_nodes,)
         x = self.norm(x) # (n_nodes,)
-        x = self.out_layer(x) # (num_fault_types,)
 
         return x
     
@@ -170,7 +161,63 @@ class GraphTransformer(nn.Module):
 
         return
 
+class PowerFormer(GraphTransformer):
+    def __init__(self, d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, num_fault_types, num_fault_locations, task, *args, **kwargs):
+        super().__init__(d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, *args, **kwargs)
 
+        assert task in ['detect', 'locate'], f"Invalid task type: {task}"
+        
+        if task == 'detect':
+            self.num_classes = num_fault_types
+        else:
+            self.num_classes = num_fault_locations
+
+        self.out_layer = nn.Sequential(
+            nn.Linear(num_nodes, 2*num_nodes),
+            nn.SiLU(),
+            nn.Linear(2*num_nodes, num_nodes),
+            nn.Dropout(dropout),
+            nn.SiLU(),
+            nn.Linear(num_nodes, self.num_classes )
+        )
+
+    def forward(self, x, edge_index, edge_attr):
+        x = super().forward(x, edge_index, edge_attr) # (n_nodes,)
+        x = self.out_layer(x) # (num_fault_types,)
+
+        return x
+    
+    def initialize_weights(self):
+        return super().initialize_weights()
+    
+    def freeze_attention_layers(self, layers):
+        return super().freeze_attention_layers(layers)
+
+
+# class PowerFormerLocate(GraphTransformer):
+#     def __init__(self, d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, num_fault_types, *args, **kwargs):
+#         super().__init__(d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, *args, **kwargs)
+
+#         self.out_layer = nn.Sequential(
+#             nn.Linear(num_nodes, 2*num_nodes),
+#             nn.SiLU(),
+#             nn.Linear(2*num_nodes, num_nodes),
+#             nn.Dropout(dropout),
+#             nn.SiLU(),
+#             nn.Linear(num_nodes, num_fault_types)
+#         )
+
+#     def forward(self, x, edge_index, edge_attr):
+#         x = super().forward(x, edge_index, edge_attr) # (n_nodes,)
+#         x = self.out_layer(x) # (num_fault_types,)
+
+#         return x
+    
+#     def initialize_weights(self):
+#         return super().initialize_weights()
+    
+#     def freeze_attention_layers(self, layers):
+#         return super().freeze_attention_layers(layers)
 
             
 

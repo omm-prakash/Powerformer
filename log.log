@@ -2684,3 +2684,119 @@
 2025-04-30 12:00:06,903 - expt-debug - INFO - 
 2025-04-30 12:00:06,903 - expt-debug - INFO - ========== Starting model training. ==========
 2025-04-30 12:00:43,740 - expt-44 - INFO - epoch:68:: train_loss:0.5606497288930001 | train_f1_score: 0.8004866535098386
+2025-04-30 12:27:43,635 - expt-44 - INFO - epoch:69:: train_loss:0.569206505850676 | train_f1_score: 0.7977827257155222
+2025-04-30 12:52:07,210 - expt-45 - INFO - 
+2025-04-30 12:52:07,233 - expt-45 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-04-30 12:52:07,234 - expt-45 - INFO - ++++++++++++++++++++++++++ Experiment: 45 ++++++++++++++++++++++++++
+2025-04-30 12:52:07,234 - expt-45 - INFO - Description: Training model trained in expt-41 with ignored fault locations 3,6.
+2025-04-30 12:52:07,234 - expt-45 - INFO - 
+2025-04-30 12:52:07,234 - expt-45 - INFO - Dataset info.
+2025-04-30 12:52:07,234 - expt-45 - INFO - > Data names: ['microgrid_fault_dataset_rms', 'microgrid_steady_state_rms']
+2025-04-30 12:52:07,234 - expt-45 - INFO - > Case range: [1, 2700]
+2025-04-30 12:52:07,235 - expt-45 - INFO - 
+2025-04-30 12:52:07,235 - expt-45 - INFO - Loading model.
+2025-04-30 12:54:53,853 - expt-44 - INFO - epoch:70:: train_loss:0.5593752345656423 | train_f1_score: 0.8005979685334241
+2025-04-30 12:58:18,313 - expt-44 - INFO -              :: val_loss:0.4453488357166984 | val_f1_score:0.794994185099175
+2025-04-30 12:58:19,441 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-70.pt
+2025-04-30 13:25:46,199 - expt-44 - INFO - epoch:71:: train_loss:0.5474324610242864 | train_f1_score: 0.8055156369344207
+2025-04-30 13:52:47,399 - expt-44 - INFO - epoch:72:: train_loss:0.5510753214064298 | train_f1_score: 0.806020963497346
+2025-04-30 14:19:59,859 - expt-44 - INFO - epoch:73:: train_loss:0.5600513437643284 | train_f1_score: 0.8035408491177574
+2025-04-30 14:46:59,285 - expt-44 - INFO - epoch:74:: train_loss:0.5716446022876024 | train_f1_score: 0.8003903557015288
+2025-04-30 15:14:10,156 - expt-44 - INFO - epoch:75:: train_loss:0.5483467823795313 | train_f1_score: 0.8085027983308803
+2025-04-30 15:17:31,618 - expt-44 - INFO -              :: val_loss:0.456637560106232 | val_f1_score:0.7829643720025092
+2025-04-30 15:17:32,377 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-75.pt
+2025-04-30 15:45:15,193 - expt-44 - INFO - epoch:76:: train_loss:0.5439056743506546 | train_f1_score: 0.8075346868379517
+2025-04-30 16:12:40,098 - expt-44 - INFO - epoch:77:: train_loss:0.5491088709838492 | train_f1_score: 0.8068573394674965
+2025-04-30 16:40:03,184 - expt-44 - INFO - epoch:78:: train_loss:0.5455978544366206 | train_f1_score: 0.8089988861330466
+2025-04-30 17:07:42,196 - expt-44 - INFO - epoch:79:: train_loss:0.5432724445565148 | train_f1_score: 0.8105460010473001
+2025-04-30 17:36:37,257 - expt-debug - INFO - 
+2025-04-30 17:36:37,286 - expt-debug - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-04-30 17:36:37,286 - expt-debug - INFO - ++++++++++++++++++++++++++ Experiment: debug ++++++++++++++++++++++++++
+2025-04-30 17:36:37,286 - expt-debug - INFO - Description: Training model trained in expt-41 with ignored fault locations 3,6.
+2025-04-30 17:36:37,286 - expt-debug - INFO - 
+2025-04-30 17:36:37,286 - expt-debug - INFO - Dataset info.
+2025-04-30 17:36:37,286 - expt-debug - INFO - > Data names: ['microgrid_fault_dataset_rms', 'microgrid_steady_state_rms']
+2025-04-30 17:36:37,287 - expt-debug - INFO - > Case range: [1, 2700]
+2025-04-30 17:36:37,287 - expt-debug - INFO - 
+2025-04-30 17:36:37,287 - expt-debug - INFO - Loading model.
+2025-04-30 17:36:38,007 - expt-debug - INFO - > No. of parameters: 26343
+2025-04-30 17:36:38,007 - expt-debug - INFO - 
+2025-04-30 17:36:38,016 - expt-debug - INFO - Using device: cuda
+2025-04-30 17:36:38,242 - expt-debug - INFO - > GPU: Tesla V100-PCIE-16GB
+2025-04-30 17:35:26,957 - expt-44 - INFO - epoch:80:: train_loss:0.5430032485737665 | train_f1_score: 0.8083801639896687
+2025-04-30 17:38:47,383 - expt-44 - INFO -              :: val_loss:0.5083797216777549 | val_f1_score:0.7894456355308711
+2025-04-30 17:38:47,969 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-80.pt
+2025-04-30 17:42:09,240 - expt-debug - INFO - Dataset Size: 75780
+2025-04-30 17:42:14,680 - expt-debug - INFO - 
+2025-04-30 17:42:14,681 - expt-debug - INFO - Loading pretrained model from: results/expt-41| 2025-04-26 18:16/weights/epoch-150.pt
+2025-04-30 17:42:14,681 - expt-debug - INFO - > Used data info:: names: ['microgrid_steady_state_rms', 'microgrid_fault_dataset_rms'], range: [1, 2700]
+2025-04-30 17:42:14,682 - expt-debug - INFO - > epoch:150:: train_loss:0.5967486028530931 | train_f1_score: 0.7787272861008082
+2025-04-30 17:42:14,867 - expt-debug - INFO - 
+2025-04-30 17:42:14,867 - expt-debug - INFO - ========== Starting model training. ==========
+2025-04-30 18:00:05,045 - expt-debug - INFO - epoch:0:: train_loss:0.6933355303482299 | train_f1_score: 0.7699972690738662
+2025-04-30 18:02:24,542 - expt-debug - INFO -              :: val_loss:0.40959635387500776 | val_f1_score:0.8709721939306425
+2025-04-30 18:06:23,434 - expt-44 - INFO - epoch:81:: train_loss:0.5449822987638232 | train_f1_score: 0.8094820271491306
+2025-04-30 18:20:04,066 - expt-debug - INFO - epoch:1:: train_loss:0.6020135197632708 | train_f1_score: 0.7903807788335888
+2025-04-30 19:40:43,658 - expt-46 - INFO - 
+2025-04-30 19:40:43,677 - expt-46 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-04-30 19:40:43,678 - expt-46 - INFO - ++++++++++++++++++++++++++ Experiment: 46 ++++++++++++++++++++++++++
+2025-04-30 19:40:43,678 - expt-46 - INFO - Description: Locate Fault: Training model trained in expt-41 with ignored fault locations 3,6.
+2025-04-30 19:40:43,678 - expt-46 - INFO - 
+2025-04-30 19:40:43,678 - expt-46 - INFO - Dataset info.
+2025-04-30 19:40:43,679 - expt-46 - INFO - > Data names: ['microgrid_fault_dataset_rms', 'All_DER_outage_grid_fault_CSV', 'All_DER_outage_islanded_fault_CSV']
+2025-04-30 19:40:43,679 - expt-46 - INFO - > Case range: [1, 9000]
+2025-04-30 19:40:43,679 - expt-46 - INFO - 
+2025-04-30 19:40:43,679 - expt-46 - INFO - Loading model.
+2025-04-30 19:40:44,326 - expt-46 - INFO - > No. of parameters: 26349
+2025-04-30 19:40:44,326 - expt-46 - INFO - 
+2025-04-30 19:40:44,335 - expt-46 - INFO - Using device: cuda
+2025-04-30 19:40:44,579 - expt-46 - INFO - > GPU: Tesla V100-PCIE-16GB
+2025-04-30 19:48:17,359 - expt-46 - INFO - Dataset Size: 105300
+2025-04-30 19:48:20,149 - expt-46 - INFO - 
+2025-04-30 19:48:20,149 - expt-46 - INFO - Loading pretrained model from: results/expt-44| 2025-04-29 07:13/weights/epoch-80.pt
+2025-04-30 19:48:20,150 - expt-46 - INFO - > Used data info:: names: ['microgrid_fault_dataset_rms', 'microgrid_steady_state_rms'], range: [1, 2700]
+2025-04-30 19:48:20,150 - expt-46 - INFO - > epoch:80:: train_loss:0.5430032485737665 | train_f1_score: 0.8083801639896687
+2025-04-30 20:03:16,079 - expt-47 - INFO - 
+2025-04-30 20:03:16,098 - expt-47 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-04-30 20:03:16,099 - expt-47 - INFO - ++++++++++++++++++++++++++ Experiment: 47 ++++++++++++++++++++++++++
+2025-04-30 20:03:16,099 - expt-47 - INFO - Description: Detect Fault: Training model trained in expt-41 with ignored fault locations 3,6.
+2025-04-30 20:03:16,099 - expt-47 - INFO - 
+2025-04-30 20:03:16,099 - expt-47 - INFO - Dataset info.
+2025-04-30 20:03:16,099 - expt-47 - INFO - > Data names: ['microgrid_fault_dataset_rms', 'All_DER_outage_grid_fault_CSV', 'All_DER_outage_islanded_fault_CSV']
+2025-04-30 20:03:16,100 - expt-47 - INFO - > Case range: [1, 9000]
+2025-04-30 20:03:16,100 - expt-47 - INFO - 
+2025-04-30 20:03:16,100 - expt-47 - INFO - Loading model.
+2025-04-30 20:03:16,862 - expt-47 - INFO - > No. of parameters: 26343
+2025-04-30 20:03:16,862 - expt-47 - INFO - 
+2025-04-30 20:03:16,871 - expt-47 - INFO - Using device: cuda
+2025-04-30 20:03:17,106 - expt-47 - INFO - > GPU: Tesla V100-PCIE-16GB
+2025-04-30 20:10:28,153 - expt-47 - INFO - Dataset Size: 105300
+2025-04-30 20:10:30,060 - expt-47 - INFO - 
+2025-04-30 20:10:30,061 - expt-47 - INFO - Loading pretrained model from: results/expt-44| 2025-04-29 07:13/weights/epoch-80.pt
+2025-04-30 20:10:30,061 - expt-47 - INFO - > Used data info:: names: ['microgrid_fault_dataset_rms', 'microgrid_steady_state_rms'], range: [1, 2700]
+2025-04-30 20:10:30,061 - expt-47 - INFO - > epoch:80:: train_loss:0.5430032485737665 | train_f1_score: 0.8083801639896687
+2025-04-30 20:10:30,188 - expt-47 - INFO - 
+2025-04-30 20:10:30,189 - expt-47 - INFO - ========== Starting model training. ==========
+2025-04-30 20:33:03,626 - expt-48 - INFO - 
+2025-04-30 20:33:03,753 - expt-48 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-04-30 20:33:03,754 - expt-48 - INFO - ++++++++++++++++++++++++++ Experiment: 48 ++++++++++++++++++++++++++
+2025-04-30 20:33:03,754 - expt-48 - INFO - Description: Locate Fault: Training model trained in expt-41 with ignored fault locations 3,6.
+2025-04-30 20:33:03,754 - expt-48 - INFO - 
+2025-04-30 20:33:03,754 - expt-48 - INFO - Dataset info.
+2025-04-30 20:33:03,754 - expt-48 - INFO - > Data names: ['microgrid_fault_dataset_rms', 'All_DER_outage_grid_fault_CSV', 'All_DER_outage_islanded_fault_CSV']
+2025-04-30 20:33:03,755 - expt-48 - INFO - > Case range: [1, 9000]
+2025-04-30 20:33:03,755 - expt-48 - INFO - 
+2025-04-30 20:33:03,755 - expt-48 - INFO - Loading model.
+2025-04-30 20:33:04,696 - expt-48 - INFO - > No. of parameters: 26349
+2025-04-30 20:33:04,696 - expt-48 - INFO - 
+2025-04-30 20:33:04,704 - expt-48 - INFO - Using device: cuda
+2025-04-30 20:33:04,941 - expt-48 - INFO - > GPU: Tesla V100-PCIE-16GB
+2025-04-30 20:38:11,957 - expt-47 - INFO - epoch:0:: train_loss:0.6797306554827918 | train_f1_score: 0.7569861508079266
+2025-04-30 20:40:31,977 - expt-48 - INFO - Dataset Size: 105300
+2025-04-30 20:40:34,011 - expt-48 - INFO - 
+2025-04-30 20:40:34,012 - expt-48 - INFO - Loading pretrained model from: results/expt-44| 2025-04-29 07:13/weights/epoch-80.pt
+2025-04-30 20:40:34,012 - expt-48 - INFO - > Used data info:: names: ['microgrid_fault_dataset_rms', 'microgrid_steady_state_rms'], range: [1, 2700]
+2025-04-30 20:40:34,012 - expt-48 - INFO - > epoch:80:: train_loss:0.5430032485737665 | train_f1_score: 0.8083801639896687
+2025-04-30 20:40:34,169 - expt-48 - INFO - 
+2025-04-30 20:40:34,170 - expt-48 - INFO - ========== Starting model training. ==========
+2025-04-30 20:41:32,629 - expt-47 - INFO -              :: val_loss:0.5670441757804143 | val_f1_score:0.7699912062876741

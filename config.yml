@@ -2,11 +2,15 @@ n_workers: 9
 random_seed: 11
 result_dir: '/scratch/opsahoo.eee20.itbhu/Thesis'
 test_mode: false
-desc: "Training model trained in expt-41 with ignored fault locations 3,6."
+desc: "Locate Fault: Training model trained in expt-41 with ignored fault locations 3,6."
+
+task: 'locate' # e.g. "detect" or "locate"
+
 
 dataset:
   data_path: '/scratch/opsahoo.eee20.itbhu/Thesis/SmartGrid Datasets'
-  data_names: ['microgrid_fault_dataset_rms', 'microgrid_steady_state_rms'] #, 'All_DER_outage_grid_fault_CSV', 'microgrid_steady_state_rms_islanded', 'All_DER_outage_islanded_fault_CSV']
+  data_names: ['microgrid_fault_dataset_rms', 'All_DER_outage_grid_fault_CSV', 'All_DER_outage_islanded_fault_CSV'] 
+  # 'microgrid_steady_state_rms'] #, 'All_DER_outage_grid_fault_CSV', 'microgrid_steady_state_rms_islanded', 'All_DER_outage_islanded_fault_CSV']
 
   window_size: 25
   stride: 12
@@ -15,7 +19,8 @@ dataset:
   n_edge_features: 3
   n_node_features: 3
   num_fault_types: 7
-  case_range: [1,2700]  # Using a list instead of a tuple
+  num_fault_locations: 8
+  case_range: [1,9000]  # Using a list instead of a tuple
   data_portion_from_end: 0.3
   ignored_fault_locations: [3,6] # Ignored faults locations 
 
@@ -45,7 +50,8 @@ training:
   freeze_attention_layers: [0,1,2] # list belongs to {0, 1, ..., n_layers-1}
 
   retrain_model: true
-  pretrained_model_path: 'results/expt-41| 2025-04-26 18:16/weights/epoch-150.pt'
+  pretrained_model_path: 'results/expt-44| 2025-04-29 07:13/weights/epoch-80.pt'
+  only_load_attention: true
 
   multi_gpu: false
 

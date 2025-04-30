@@ -31,10 +31,11 @@ def extractData(data_path:str,
                 n_edges:int, 
                 n_node_features:int, 
                 n_edge_features:int,
-                ignored_fault_locations:list, 
+                ignored_fault_locations:list,
+                task:str, 
                 case_range=None,
                 data_portion=0.5):
-    
+    assert task in ['detect', 'locate'], f"Invalid task type: {task}"
     csv_file_paths = []
     for data_name in data_names:
         csv_file_paths.append(os.path.join(data_path, data_name))
@@ -62,7 +63,9 @@ def extractData(data_path:str,
                 continue
 
             current_df = pd.read_csv(file, index_col=False)
-            fault_location = current_df.FAULT_LINE.loc[0].astype(int)            
+            fault_location = current_df.FAULT_LINE.loc[0].astype(int)   
+            fault_type = current_df.FAULT_TYPE.loc[0].astype(int)
+
             if fault_location in ignored_fault_locations:
                 continue
             voltage_df = pd.read_csv(file.replace('ICaseNum', 'VCaseNum'), index_col=False)
@@ -73,7 +76,7 @@ def extractData(data_path:str,
             steady_state_edge_data = steady_state_edge_data.to(torch.float64)
 
             edge_data = complete_edge_data[int((1-data_portion)*complete_edge_data.size(0)):]
-            edge_data = edge_data.unfold(0, window_size, stride).view(-1, n_edges, n_edge_features, window_size).transpose(-1, -2)#.view(-1, n_edges*window_size, n_edge_features) # (-1, edges, time, edge_features)
+            edge_data = edge_data.unfold(0, window_size, stride).view(-1, n_edges, n_edge_features, window_size).transpose(-1, -2) # (-1, edges, time, edge_features)
             edge_data = edge_data.to(torch.float64)
             # print('Edge data shape:', edge_data.size())
 
@@ -91,10 +94,17 @@ def extractData(data_path:str,
             node_data = node_data.to(torch.float64)
             # print('Node data shape:', node_data.size())
 
-            steady_state_labels = torch.tensor(np.repeat(1, steady_state_node_data.size(0), axis=0)).to(torch.long)
+            if task == 'detect':
+                steady_state_labels = torch.tensor(np.repeat(1, steady_state_node_data.size(0), axis=0)).to(torch.long)
+                labels = torch.tensor(np.repeat(fault_type, node_data.size(0), axis=0))
+            else:
+                steady_state_labels = torch.tensor(np.repeat(8, steady_state_node_data.size(0), axis=0)).to(torch.long)
+                if fault_type == 1:
+                    fault_location = 8
+                labels = torch.tensor(np.repeat(fault_location, node_data.size(0), axis=0))
 
-            labels = torch.tensor(np.repeat(current_df.FAULT_TYPE.loc[0].astype(int), node_data.size(0), axis=0)) # (-1)
-            labels = labels.to(torch.long)
+            # labels = torch.tensor(np.repeat(fault_type, node_data.size(0), axis=0)) # (-1)
+            # labels = labels.to(torch.long)
             # print('Label shape:', labels.size())
 
             edge_dataset = torch.concat((edge_dataset, edge_data), dim=0)
