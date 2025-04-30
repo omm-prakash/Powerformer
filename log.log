@@ -2405,3 +2405,282 @@
 2025-04-28 23:06:51,260 - expt-42 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-42| 2025-04-26 22:00/weights/epoch-185.pt
 2025-04-28 23:11:23,971 - expt-41 - INFO - epoch:91:: train_loss:0.6171718855401204 | train_f1_score: 0.7688201384539697
 2025-04-28 23:22:09,048 - expt-42 - INFO - epoch:186:: train_loss:0.6394913993529061 | train_f1_score: 0.7914048737396371
+2025-04-28 23:37:30,053 - expt-42 - INFO - epoch:187:: train_loss:0.6330204370717369 | train_f1_score: 0.7912923522155856
+2025-04-28 23:44:42,207 - expt-41 - INFO - epoch:92:: train_loss:0.6122227956945578 | train_f1_score: 0.771910239942148
+2025-04-28 23:52:40,270 - expt-42 - INFO - epoch:188:: train_loss:0.5921761299437243 | train_f1_score: 0.8025684684342406
+2025-04-29 00:07:55,281 - expt-42 - INFO - epoch:189:: train_loss:0.5689187753070122 | train_f1_score: 0.8086611243041357
+2025-04-29 00:18:11,845 - expt-41 - INFO - epoch:93:: train_loss:0.6098589134898115 | train_f1_score: 0.7716199056952177
+2025-04-29 00:23:25,476 - expt-42 - INFO - epoch:190:: train_loss:0.5687343537175659 | train_f1_score: 0.809856426975962
+2025-04-29 00:25:36,973 - expt-42 - INFO -              :: val_loss:0.4680904667332692 | val_f1_score:0.8713941950803413
+2025-04-29 00:25:37,216 - expt-42 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-42| 2025-04-26 22:00/weights/epoch-190.pt
+2025-04-29 00:40:58,697 - expt-42 - INFO - epoch:191:: train_loss:0.5786679665845078 | train_f1_score: 0.8115178920788726
+2025-04-29 00:51:32,739 - expt-41 - INFO - epoch:94:: train_loss:0.6112180251705046 | train_f1_score: 0.7713289569608867
+2025-04-29 00:59:03,812 - expt-43 - INFO - 
+2025-04-29 00:59:03,834 - expt-43 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-04-29 00:59:03,835 - expt-43 - INFO - ++++++++++++++++++++++++++ Experiment: 43 ++++++++++++++++++++++++++
+2025-04-29 00:59:03,835 - expt-43 - INFO - Description: testing multi-gpu training
+2025-04-29 00:59:03,835 - expt-43 - INFO - 
+2025-04-29 00:59:03,835 - expt-43 - INFO - Dataset info.
+2025-04-29 00:59:03,835 - expt-43 - INFO - > Data names: ['microgrid_steady_state_rms', 'microgrid_fault_dataset_rms']
+2025-04-29 00:59:03,835 - expt-43 - INFO - > Case range: [1, 3000]
+2025-04-29 00:59:03,836 - expt-43 - INFO - 
+2025-04-29 00:59:03,836 - expt-43 - INFO - Loading model.
+2025-04-29 00:59:04,130 - expt-43 - INFO - > No. of parameters: 13543
+2025-04-29 00:59:04,131 - expt-43 - INFO - 
+2025-04-29 00:59:04,131 - expt-43 - INFO - Using device: cuda
+2025-04-29 00:59:04,303 - expt-43 - INFO - > GPU: Tesla V100-PCIE-16GB
+2025-04-29 01:07:34,912 - expt-43 - INFO - Dataset Size: 284400
+2025-04-29 01:07:35,851 - expt-43 - INFO - 
+2025-04-29 01:07:35,852 - expt-43 - INFO - ========== Starting model training. ==========
+2025-04-29 01:26:14,104 - expt-41 - INFO - epoch:95:: train_loss:0.6142682369081193 | train_f1_score: 0.7692736860079572
+2025-04-29 01:30:35,516 - expt-41 - INFO -              :: val_loss:0.4663828450926495 | val_f1_score:0.82013110720925
+2025-04-29 01:30:35,837 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-95.pt
+2025-04-29 02:04:14,782 - expt-41 - INFO - epoch:96:: train_loss:0.6191382958937439 | train_f1_score: 0.7700249858752148
+2025-04-29 02:14:35,863 - expt-43 - INFO - epoch:0:: train_loss:1.1214630620866892 | train_f1_score: 0.43217250371349486
+2025-04-29 02:23:37,156 - expt-43 - INFO -              :: val_loss:0.807966673796449 | val_f1_score:0.5198287884165269
+2025-04-29 02:37:34,345 - expt-41 - INFO - epoch:97:: train_loss:0.6195178070059535 | train_f1_score: 0.7669630330474548
+2025-04-29 03:11:09,858 - expt-41 - INFO - epoch:98:: train_loss:0.612046305528994 | train_f1_score: 0.771279983120684
+2025-04-29 03:31:16,550 - expt-43 - INFO - epoch:1:: train_loss:0.9087152766699615 | train_f1_score: 0.5350389743910219
+2025-04-29 03:44:34,802 - expt-41 - INFO - epoch:99:: train_loss:0.6105231401962506 | train_f1_score: 0.769672110955945
+2025-04-29 04:18:10,889 - expt-41 - INFO - epoch:100:: train_loss:0.6087389769104595 | train_f1_score: 0.7719456201236349
+2025-04-29 04:22:50,982 - expt-41 - INFO -              :: val_loss:0.41353698396671945 | val_f1_score:0.865583484738524
+2025-04-29 04:22:51,556 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-100.pt
+2025-04-29 04:38:14,276 - expt-43 - INFO - epoch:2:: train_loss:0.8485252117830103 | train_f1_score: 0.5662401299167337
+2025-04-29 04:56:02,892 - expt-41 - INFO - epoch:101:: train_loss:0.6110946289658467 | train_f1_score: 0.7702375038777404
+2025-04-29 05:29:28,132 - expt-41 - INFO - epoch:102:: train_loss:0.6078834124737241 | train_f1_score: 0.7713956648923224
+2025-04-29 05:45:00,871 - expt-43 - INFO - epoch:3:: train_loss:0.8148807165967489 | train_f1_score: 0.5795146222448139
+2025-04-29 06:02:47,885 - expt-41 - INFO - epoch:103:: train_loss:0.6118252741490495 | train_f1_score: 0.7704574395275904
+2025-04-29 06:36:22,529 - expt-41 - INFO - epoch:104:: train_loss:0.6168549433073399 | train_f1_score: 0.7694903528368169
+2025-04-29 06:51:58,856 - expt-43 - INFO - epoch:4:: train_loss:0.7931560101749777 | train_f1_score: 0.5860920180554894
+2025-04-29 07:10:41,492 - expt-41 - INFO - epoch:105:: train_loss:0.6039241430568717 | train_f1_score: 0.7746492934972266
+2025-04-29 07:13:26,025 - expt-44 - INFO - 
+2025-04-29 07:13:26,027 - expt-44 - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-04-29 07:13:26,027 - expt-44 - INFO - ++++++++++++++++++++++++++ Experiment: 44 ++++++++++++++++++++++++++
+2025-04-29 07:13:26,028 - expt-44 - INFO - Description: testing multi-gpu training
+2025-04-29 07:13:26,028 - expt-44 - INFO - 
+2025-04-29 07:13:26,028 - expt-44 - INFO - Dataset info.
+2025-04-29 07:13:26,028 - expt-44 - INFO - > Data names: ['microgrid_fault_dataset_rms', 'microgrid_steady_state_rms']
+2025-04-29 07:13:26,028 - expt-44 - INFO - > Case range: [1, 2700]
+2025-04-29 07:13:26,029 - expt-44 - INFO - 
+2025-04-29 07:13:26,029 - expt-44 - INFO - Loading model.
+2025-04-29 07:13:26,405 - expt-44 - INFO - > No. of parameters: 26343
+2025-04-29 07:13:26,406 - expt-44 - INFO - 
+2025-04-29 07:13:26,407 - expt-44 - INFO - Using device: cuda
+2025-04-29 07:13:26,576 - expt-44 - INFO - > GPU: Tesla V100-PCIE-16GB
+2025-04-29 07:15:27,742 - expt-41 - INFO -              :: val_loss:0.41168335223437624 | val_f1_score:0.8460187886132576
+2025-04-29 07:15:28,129 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-105.pt
+2025-04-29 07:18:44,476 - expt-44 - INFO - Dataset Size: 103860
+2025-04-29 07:18:45,182 - expt-44 - INFO - 
+2025-04-29 07:18:45,182 - expt-44 - INFO - ========== Starting model training. ==========
+2025-04-29 07:43:25,988 - expt-44 - INFO - epoch:0:: train_loss:1.364695689974196 | train_f1_score: 0.3610611741451662
+2025-04-29 07:46:51,733 - expt-44 - INFO -              :: val_loss:1.0149263878354833 | val_f1_score:0.5174136848618403
+2025-04-29 07:48:53,374 - expt-41 - INFO - epoch:106:: train_loss:0.6072360253460933 | train_f1_score: 0.7718405396984218
+2025-04-29 08:10:53,032 - expt-44 - INFO - epoch:1:: train_loss:1.066044980209889 | train_f1_score: 0.4972723928336412
+2025-04-29 08:22:12,936 - expt-41 - INFO - epoch:107:: train_loss:0.6032328349761037 | train_f1_score: 0.7731179903535873
+2025-04-29 08:35:01,245 - expt-44 - INFO - epoch:2:: train_loss:0.9404104959499447 | train_f1_score: 0.5614983032080467
+2025-04-29 08:55:32,828 - expt-41 - INFO - epoch:108:: train_loss:0.6071083832961561 | train_f1_score: 0.7735818428578672
+2025-04-29 08:59:09,700 - expt-44 - INFO - epoch:3:: train_loss:0.8926578117304484 | train_f1_score: 0.5708374848616516
+2025-04-29 09:23:44,912 - expt-44 - INFO - epoch:4:: train_loss:0.868227964142584 | train_f1_score: 0.578747371824847
+2025-04-29 09:28:46,603 - expt-41 - INFO - epoch:109:: train_loss:0.6172278931131983 | train_f1_score: 0.7729922762500013
+2025-04-29 09:47:54,630 - expt-44 - INFO - epoch:5:: train_loss:0.849514609547428 | train_f1_score: 0.5853319901065912
+2025-04-29 09:51:16,726 - expt-44 - INFO -              :: val_loss:0.6892607546967034 | val_f1_score:0.585931936624846
+2025-04-29 09:51:17,392 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-5.pt
+2025-04-29 10:02:14,255 - expt-41 - INFO - epoch:110:: train_loss:0.6082319736609327 | train_f1_score: 0.7707458075732859
+2025-04-29 10:06:51,743 - expt-41 - INFO -              :: val_loss:0.4316916741943203 | val_f1_score:0.8289478205430506
+2025-04-29 10:06:51,947 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-110.pt
+2025-04-29 10:15:53,451 - expt-44 - INFO - epoch:6:: train_loss:0.8400051278463421 | train_f1_score: 0.5898563469903405
+2025-04-29 10:39:47,406 - expt-44 - INFO - epoch:7:: train_loss:0.8282082357666823 | train_f1_score: 0.5921614745398066
+2025-04-29 10:40:17,230 - expt-41 - INFO - epoch:111:: train_loss:0.6107761069416213 | train_f1_score: 0.7705259394290602
+2025-04-29 11:03:52,316 - expt-44 - INFO - epoch:8:: train_loss:0.8167142894547252 | train_f1_score: 0.5953801952231086
+2025-04-29 11:13:21,154 - expt-41 - INFO - epoch:112:: train_loss:0.6046184807030777 | train_f1_score: 0.7747458300110218
+2025-04-29 11:27:45,163 - expt-44 - INFO - epoch:9:: train_loss:0.8090656383996321 | train_f1_score: 0.5970755999297459
+2025-04-29 11:46:40,915 - expt-41 - INFO - epoch:113:: train_loss:0.6342613199470266 | train_f1_score: 0.7686862228156198
+2025-04-29 11:51:57,791 - expt-44 - INFO - epoch:10:: train_loss:0.8003575798182725 | train_f1_score: 0.5993740710205838
+2025-04-29 11:55:14,300 - expt-44 - INFO -              :: val_loss:0.6425419610570593 | val_f1_score:0.6424816979102698
+2025-04-29 11:55:14,371 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-10.pt
+2025-04-29 12:19:18,096 - expt-44 - INFO - epoch:11:: train_loss:0.7944738048313322 | train_f1_score: 0.6033726605262909
+2025-04-29 12:19:51,234 - expt-41 - INFO - epoch:114:: train_loss:0.602874332871069 | train_f1_score: 0.7722620039044409
+2025-04-29 12:43:35,445 - expt-44 - INFO - epoch:12:: train_loss:0.7849333425943802 | train_f1_score: 0.6065076707536158
+2025-04-29 12:53:18,023 - expt-41 - INFO - epoch:115:: train_loss:0.6083887423511222 | train_f1_score: 0.7713205524703284
+2025-04-29 12:58:00,480 - expt-41 - INFO -              :: val_loss:0.48717067019795346 | val_f1_score:0.8499367806365449
+2025-04-29 12:58:00,537 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-115.pt
+2025-04-29 13:08:06,783 - expt-44 - INFO - epoch:13:: train_loss:0.7783208934426566 | train_f1_score: 0.611013519929142
+2025-04-29 13:31:05,972 - expt-41 - INFO - epoch:116:: train_loss:0.6121041141167456 | train_f1_score: 0.7669364426000447
+2025-04-29 13:32:15,018 - expt-44 - INFO - epoch:14:: train_loss:0.7732271440655328 | train_f1_score: 0.6151249611745906
+2025-04-29 13:56:38,176 - expt-44 - INFO - epoch:15:: train_loss:0.7684423848931397 | train_f1_score: 0.6160791280701856
+2025-04-29 14:00:01,380 - expt-44 - INFO -              :: val_loss:0.6268922661906381 | val_f1_score:0.5749916866686225
+2025-04-29 14:00:01,449 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-15.pt
+2025-04-29 14:04:20,973 - expt-41 - INFO - epoch:117:: train_loss:0.6023556361675328 | train_f1_score: 0.7729214797837913
+2025-04-29 14:24:13,951 - expt-44 - INFO - epoch:16:: train_loss:0.7629085243771525 | train_f1_score: 0.6159233972881294
+2025-04-29 14:37:41,024 - expt-41 - INFO - epoch:118:: train_loss:0.6063774061517778 | train_f1_score: 0.7713838093237525
+2025-04-29 14:48:27,158 - expt-44 - INFO - epoch:17:: train_loss:0.7608164759276277 | train_f1_score: 0.6210678933452822
+2025-04-29 15:10:59,744 - expt-41 - INFO - epoch:119:: train_loss:0.6144339603720368 | train_f1_score: 0.7700408305621185
+2025-04-29 15:12:55,062 - expt-44 - INFO - epoch:18:: train_loss:0.7560203428845076 | train_f1_score: 0.620942531438157
+2025-04-29 15:37:24,984 - expt-44 - INFO - epoch:19:: train_loss:0.7548840550502341 | train_f1_score: 0.6225217579687757
+2025-04-29 15:44:24,226 - expt-41 - INFO - epoch:120:: train_loss:0.6033156682554898 | train_f1_score: 0.7720917408024698
+2025-04-29 15:49:09,875 - expt-41 - INFO -              :: val_loss:0.39291230410531636 | val_f1_score:0.8593250503151614
+2025-04-29 15:49:10,023 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-120.pt
+2025-04-29 16:01:37,347 - expt-44 - INFO - epoch:20:: train_loss:0.7519181033685987 | train_f1_score: 0.6234666591201693
+2025-04-29 16:04:54,758 - expt-44 - INFO -              :: val_loss:0.6208420950975331 | val_f1_score:0.6486922442940358
+2025-04-29 16:04:54,796 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-20.pt
+2025-04-29 16:22:22,844 - expt-41 - INFO - epoch:121:: train_loss:0.6167012997894799 | train_f1_score: 0.7700745908284455
+2025-04-29 16:29:04,841 - expt-44 - INFO - epoch:21:: train_loss:0.7503731277366839 | train_f1_score: 0.6296299985575576
+2025-04-29 16:53:15,109 - expt-44 - INFO - epoch:22:: train_loss:0.742321647087061 | train_f1_score: 0.6290534786244971
+2025-04-29 16:55:47,094 - expt-41 - INFO - epoch:122:: train_loss:0.6046151238431214 | train_f1_score: 0.7687986612893888
+2025-04-29 17:17:47,482 - expt-44 - INFO - epoch:23:: train_loss:0.7415089699549359 | train_f1_score: 0.6332033334324674
+2025-04-29 17:29:20,621 - expt-41 - INFO - epoch:123:: train_loss:0.6150080958978106 | train_f1_score: 0.7705493082955569
+2025-04-29 17:42:03,748 - expt-44 - INFO - epoch:24:: train_loss:0.7453652413550934 | train_f1_score: 0.6356145112213831
+2025-04-29 18:02:52,501 - expt-41 - INFO - epoch:124:: train_loss:0.6141526398099784 | train_f1_score: 0.7727604610374739
+2025-04-29 18:06:38,271 - expt-44 - INFO - epoch:25:: train_loss:0.7396870096042908 | train_f1_score: 0.6443634866553459
+2025-04-29 18:10:09,051 - expt-44 - INFO -              :: val_loss:0.5878910234812394 | val_f1_score:0.7171995134585145
+2025-04-29 18:10:09,276 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-25.pt
+2025-04-29 18:34:43,156 - expt-44 - INFO - epoch:26:: train_loss:0.7380624863079396 | train_f1_score: 0.6580991937671425
+2025-04-29 18:36:01,386 - expt-41 - INFO - epoch:125:: train_loss:0.6202361884601291 | train_f1_score: 0.7725645079495366
+2025-04-29 18:40:45,184 - expt-41 - INFO -              :: val_loss:0.42714797237789914 | val_f1_score:0.8340073417010159
+2025-04-29 18:40:45,220 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-125.pt
+2025-04-29 18:58:34,682 - expt-44 - INFO - epoch:27:: train_loss:0.7174883269237786 | train_f1_score: 0.6925038983881217
+2025-04-29 19:14:09,806 - expt-41 - INFO - epoch:126:: train_loss:0.6006094265923393 | train_f1_score: 0.7757107261041903
+2025-04-29 19:23:05,072 - expt-44 - INFO - epoch:28:: train_loss:0.6994857599563173 | train_f1_score: 0.7109353619422639
+2025-04-29 19:47:25,032 - expt-44 - INFO - epoch:29:: train_loss:0.6939756029680098 | train_f1_score: 0.7214753327235969
+2025-04-29 19:47:47,619 - expt-41 - INFO - epoch:127:: train_loss:0.598494326778945 | train_f1_score: 0.7761029819544761
+2025-04-29 20:11:32,586 - expt-44 - INFO - epoch:30:: train_loss:0.686200416782001 | train_f1_score: 0.7248002494263721
+2025-04-29 20:15:02,687 - expt-44 - INFO -              :: val_loss:0.712043456316912 | val_f1_score:0.6475942034715942
+2025-04-29 20:15:02,818 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-30.pt
+2025-04-29 20:20:50,488 - expt-41 - INFO - epoch:128:: train_loss:0.6068537631289436 | train_f1_score: 0.7731127922316688
+2025-04-29 20:39:22,630 - expt-44 - INFO - epoch:31:: train_loss:0.6859611553085813 | train_f1_score: 0.7297098474539718
+2025-04-29 20:54:20,430 - expt-41 - INFO - epoch:129:: train_loss:0.5938876423351754 | train_f1_score: 0.7771508726441424
+2025-04-29 21:03:37,748 - expt-44 - INFO - epoch:32:: train_loss:0.6709986052073734 | train_f1_score: 0.7324309572486692
+2025-04-29 21:27:59,544 - expt-41 - INFO - epoch:130:: train_loss:0.595826973045179 | train_f1_score: 0.7780780274118896
+2025-04-29 21:28:04,370 - expt-44 - INFO - epoch:33:: train_loss:0.675912809554546 | train_f1_score: 0.735077510450254
+2025-04-29 21:32:34,384 - expt-41 - INFO -              :: val_loss:0.39864035455142943 | val_f1_score:0.8487977142656737
+2025-04-29 21:32:34,592 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-130.pt
+2025-04-29 21:52:18,111 - expt-44 - INFO - epoch:34:: train_loss:0.6744948675761456 | train_f1_score: 0.7377396335692562
+2025-04-29 22:05:49,442 - expt-41 - INFO - epoch:131:: train_loss:0.6162849060639601 | train_f1_score: 0.7766094488343581
+2025-04-29 22:16:12,508 - expt-44 - INFO - epoch:35:: train_loss:0.667966857217048 | train_f1_score: 0.7403781150750159
+2025-04-29 22:19:39,460 - expt-44 - INFO -              :: val_loss:0.5872285965714634 | val_f1_score:0.7102771914761289
+2025-04-29 22:19:39,769 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-35.pt
+2025-04-29 22:39:01,761 - expt-41 - INFO - epoch:132:: train_loss:0.6199026127584201 | train_f1_score: 0.7778775863233226
+2025-04-29 22:43:38,608 - expt-44 - INFO - epoch:36:: train_loss:0.668065930263022 | train_f1_score: 0.7394187207932355
+2025-04-29 23:07:53,796 - expt-44 - INFO - epoch:37:: train_loss:0.6614404883762919 | train_f1_score: 0.743867321449371
+2025-04-29 23:12:40,908 - expt-41 - INFO - epoch:133:: train_loss:0.6097930693068572 | train_f1_score: 0.7742405272843876
+2025-04-29 23:31:40,074 - expt-44 - INFO - epoch:38:: train_loss:0.6574899962176094 | train_f1_score: 0.749619454924316
+2025-04-29 23:46:16,293 - expt-41 - INFO - epoch:134:: train_loss:0.5921010818474493 | train_f1_score: 0.7792750839381734
+2025-04-29 23:56:01,875 - expt-44 - INFO - epoch:39:: train_loss:0.6536187918519641 | train_f1_score: 0.7487739859208755
+2025-04-30 00:19:19,551 - expt-41 - INFO - epoch:135:: train_loss:0.5830028041055356 | train_f1_score: 0.7811359543333612
+2025-04-30 00:20:19,794 - expt-44 - INFO - epoch:40:: train_loss:0.6595456249261152 | train_f1_score: 0.7489472915823053
+2025-04-30 00:23:39,331 - expt-44 - INFO -              :: val_loss:0.5391338432729178 | val_f1_score:0.7371310075626776
+2025-04-30 00:23:39,566 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-40.pt
+2025-04-30 00:23:47,961 - expt-41 - INFO -              :: val_loss:0.4139200362607544 | val_f1_score:0.8485652880302131
+2025-04-30 00:23:47,994 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-135.pt
+2025-04-30 00:47:43,489 - expt-44 - INFO - epoch:41:: train_loss:0.6532010010244559 | train_f1_score: 0.7525673848009975
+2025-04-30 00:57:08,927 - expt-41 - INFO - epoch:136:: train_loss:0.5874078616475982 | train_f1_score: 0.7825851872852944
+2025-04-30 01:11:34,386 - expt-44 - INFO - epoch:42:: train_loss:0.6470218387453989 | train_f1_score: 0.7558871976350988
+2025-04-30 01:30:34,376 - expt-41 - INFO - epoch:137:: train_loss:0.6099629091342804 | train_f1_score: 0.7795247425486937
+2025-04-30 01:35:55,012 - expt-44 - INFO - epoch:43:: train_loss:0.6455649494080091 | train_f1_score: 0.7591864960973232
+2025-04-30 02:00:02,541 - expt-44 - INFO - epoch:44:: train_loss:0.64400295778883 | train_f1_score: 0.7611327228001071
+2025-04-30 02:03:48,450 - expt-41 - INFO - epoch:138:: train_loss:0.6142190505029145 | train_f1_score: 0.7765741430842082
+2025-04-30 02:24:05,726 - expt-44 - INFO - epoch:45:: train_loss:0.6483745277461616 | train_f1_score: 0.7589637774070205
+2025-04-30 02:27:27,102 - expt-44 - INFO -              :: val_loss:0.5411160265283894 | val_f1_score:0.7259390327866316
+2025-04-30 02:27:27,460 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-45.pt
+2025-04-30 02:36:45,315 - expt-41 - INFO - epoch:139:: train_loss:0.5919692293762394 | train_f1_score: 0.7787472104495174
+2025-04-30 02:51:29,230 - expt-44 - INFO - epoch:46:: train_loss:0.6382245649635696 | train_f1_score: 0.7647880598429901
+2025-04-30 03:10:05,827 - expt-41 - INFO - epoch:140:: train_loss:0.5984353674949521 | train_f1_score: 0.7805266292782388
+2025-04-30 03:14:39,636 - expt-41 - INFO -              :: val_loss:0.43959899335148184 | val_f1_score:0.8326672458003922
+2025-04-30 03:14:39,890 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-140.pt
+2025-04-30 03:15:25,791 - expt-44 - INFO - epoch:47:: train_loss:0.63035000648471 | train_f1_score: 0.76533511419439
+2025-04-30 03:39:46,442 - expt-44 - INFO - epoch:48:: train_loss:0.6239969724612613 | train_f1_score: 0.768897217951995
+2025-04-30 03:48:10,668 - expt-41 - INFO - epoch:141:: train_loss:0.6097563109683877 | train_f1_score: 0.7762150504818134
+2025-04-30 04:03:53,453 - expt-44 - INFO - epoch:49:: train_loss:0.6307054139364707 | train_f1_score: 0.7719794431366103
+2025-04-30 04:21:20,839 - expt-41 - INFO - epoch:142:: train_loss:0.5902850440225174 | train_f1_score: 0.7811089553258376
+2025-04-30 04:28:03,504 - expt-44 - INFO - epoch:50:: train_loss:0.6239734062873903 | train_f1_score: 0.7731124105975697
+2025-04-30 04:30:58,045 - expt-44 - INFO -              :: val_loss:0.5048319336218623 | val_f1_score:0.7560511149437092
+2025-04-30 04:30:58,149 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-50.pt
+2025-04-30 04:54:18,224 - expt-41 - INFO - epoch:143:: train_loss:0.5981086000880751 | train_f1_score: 0.7787824488373403
+2025-04-30 04:55:14,388 - expt-44 - INFO - epoch:51:: train_loss:0.6283948977341057 | train_f1_score: 0.7740874323484619
+2025-04-30 05:19:27,759 - expt-44 - INFO - epoch:52:: train_loss:0.6207921759341086 | train_f1_score: 0.7745293284382605
+2025-04-30 05:27:39,406 - expt-41 - INFO - epoch:144:: train_loss:0.6019719205412767 | train_f1_score: 0.7789062494787596
+2025-04-30 05:43:59,431 - expt-44 - INFO - epoch:53:: train_loss:0.614752743317005 | train_f1_score: 0.7770170894250369
+2025-04-30 06:01:02,781 - expt-41 - INFO - epoch:145:: train_loss:0.5963514273346999 | train_f1_score: 0.7797487337388886
+2025-04-30 06:05:45,857 - expt-41 - INFO -              :: val_loss:0.4086800501335372 | val_f1_score:0.8531708904008094
+2025-04-30 06:05:46,088 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-145.pt
+2025-04-30 06:08:16,789 - expt-44 - INFO - epoch:54:: train_loss:0.6133563686230538 | train_f1_score: 0.7801331770278163
+2025-04-30 06:32:20,016 - expt-44 - INFO - epoch:55:: train_loss:0.6083232030483688 | train_f1_score: 0.7823815740389372
+2025-04-30 06:35:43,928 - expt-44 - INFO -              :: val_loss:0.6333807663530241 | val_f1_score:0.7027222924587793
+2025-04-30 06:35:43,987 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-55.pt
+2025-04-30 06:39:01,920 - expt-41 - INFO - epoch:146:: train_loss:0.5963020007503863 | train_f1_score: 0.7794877513705117
+2025-04-30 07:00:01,796 - expt-44 - INFO - epoch:56:: train_loss:0.6013777280055053 | train_f1_score: 0.7828614926000448
+2025-04-30 07:12:34,741 - expt-41 - INFO - epoch:147:: train_loss:0.6063421958531738 | train_f1_score: 0.779772251620902
+2025-04-30 07:24:20,479 - expt-44 - INFO - epoch:57:: train_loss:0.6021559751724531 | train_f1_score: 0.7848905673130921
+2025-04-30 07:46:01,481 - expt-41 - INFO - epoch:148:: train_loss:0.6041654924548293 | train_f1_score: 0.7774484510551725
+2025-04-30 07:48:26,256 - expt-44 - INFO - epoch:58:: train_loss:0.5924970478582999 | train_f1_score: 0.7864893011570041
+2025-04-30 08:12:47,977 - expt-44 - INFO - epoch:59:: train_loss:0.5841168550152803 | train_f1_score: 0.7872061757607639
+2025-04-30 08:19:23,961 - expt-41 - INFO - epoch:149:: train_loss:0.6339791225922169 | train_f1_score: 0.7709404924592708
+2025-04-30 08:37:04,811 - expt-44 - INFO - epoch:60:: train_loss:0.5944385160067323 | train_f1_score: 0.7835457139937684
+2025-04-30 08:40:18,868 - expt-44 - INFO -              :: val_loss:0.4400795101136772 | val_f1_score:0.7919074547483611
+2025-04-30 08:40:18,993 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-60.pt
+2025-04-30 08:52:52,764 - expt-41 - INFO - epoch:150:: train_loss:0.5967486028530931 | train_f1_score: 0.7787272861008082
+2025-04-30 08:57:36,305 - expt-41 - INFO -              :: val_loss:0.42003114223574173 | val_f1_score:0.840680863626715
+2025-04-30 08:57:36,413 - expt-41 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-41| 2025-04-26 18:16/weights/epoch-150.pt
+2025-04-30 09:04:14,066 - expt-44 - INFO - epoch:61:: train_loss:0.5844819973301943 | train_f1_score: 0.7890343911439294
+2025-04-30 09:28:36,352 - expt-44 - INFO - epoch:62:: train_loss:0.5737665164611803 | train_f1_score: 0.7937379497547015
+2025-04-30 09:31:01,355 - expt-41 - INFO - epoch:151:: train_loss:0.5838796978341988 | train_f1_score: 0.78357883415318
+2025-04-30 09:52:29,457 - expt-44 - INFO - epoch:63:: train_loss:0.5779549299038225 | train_f1_score: 0.7920141095947429
+2025-04-30 10:04:20,709 - expt-41 - INFO - epoch:152:: train_loss:0.591043513632115 | train_f1_score: 0.7826515549377016
+2025-04-30 10:16:55,083 - expt-44 - INFO - epoch:64:: train_loss:0.575190199967964 | train_f1_score: 0.79116528605111
+2025-04-30 10:37:44,923 - expt-41 - INFO - epoch:153:: train_loss:0.5952368687677148 | train_f1_score: 0.7791846391583753
+2025-04-30 10:41:19,490 - expt-44 - INFO - epoch:65:: train_loss:0.566587887152513 | train_f1_score: 0.795452199869774
+2025-04-30 10:44:41,574 - expt-44 - INFO -              :: val_loss:0.5403346994223788 | val_f1_score:0.7702198093592921
+2025-04-30 10:44:41,774 - expt-44 - INFO - model saved @/scratch/opsahoo.eee20.itbhu/Thesis/results/expt-44| 2025-04-29 07:13/weights/epoch-65.pt
+2025-04-30 11:08:48,968 - expt-44 - INFO - epoch:66:: train_loss:0.5669840070233991 | train_f1_score: 0.7952253969261698
+2025-04-30 11:11:05,760 - expt-41 - INFO - epoch:154:: train_loss:0.6080481138781717 | train_f1_score: 0.7781084986053276
+2025-04-30 11:32:43,853 - expt-44 - INFO - epoch:67:: train_loss:0.565489936087065 | train_f1_score: 0.798348753042523
+2025-04-30 11:43:36,207 - expt-debug - INFO - 
+2025-04-30 11:43:36,260 - expt-debug - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-04-30 11:43:36,260 - expt-debug - INFO - ++++++++++++++++++++++++++ Experiment: debug ++++++++++++++++++++++++++
+2025-04-30 11:43:36,260 - expt-debug - INFO - Description: testing multi-gpu training
+2025-04-30 11:43:36,261 - expt-debug - INFO - 
+2025-04-30 11:43:36,261 - expt-debug - INFO - Dataset info.
+2025-04-30 11:43:36,261 - expt-debug - INFO - > Data names: ['microgrid_fault_dataset_rms', 'microgrid_steady_state_rms']
+2025-04-30 11:43:36,261 - expt-debug - INFO - > Case range: [1, 2700]
+2025-04-30 11:43:36,261 - expt-debug - INFO - 
+2025-04-30 11:43:36,262 - expt-debug - INFO - Loading model.
+2025-04-30 11:43:36,543 - expt-debug - INFO - > No. of parameters: 26343
+2025-04-30 11:43:36,543 - expt-debug - INFO - 
+2025-04-30 11:43:36,543 - expt-debug - INFO - Using device: cuda
+2025-04-30 11:43:36,797 - expt-debug - INFO - > GPU: Tesla V100-PCIE-16GB
+2025-04-30 11:47:44,023 - expt-debug - INFO - 
+2025-04-30 11:47:44,044 - expt-debug - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-04-30 11:47:44,044 - expt-debug - INFO - ++++++++++++++++++++++++++ Experiment: debug ++++++++++++++++++++++++++
+2025-04-30 11:47:44,044 - expt-debug - INFO - Description: testing multi-gpu training
+2025-04-30 11:47:44,044 - expt-debug - INFO - 
+2025-04-30 11:47:44,044 - expt-debug - INFO - Dataset info.
+2025-04-30 11:47:44,045 - expt-debug - INFO - > Data names: ['microgrid_fault_dataset_rms', 'microgrid_steady_state_rms']
+2025-04-30 11:47:44,045 - expt-debug - INFO - > Case range: [1, 2700]
+2025-04-30 11:47:44,045 - expt-debug - INFO - 
+2025-04-30 11:47:44,045 - expt-debug - INFO - Loading model.
+2025-04-30 11:47:44,417 - expt-debug - INFO - > No. of parameters: 26343
+2025-04-30 11:47:44,417 - expt-debug - INFO - 
+2025-04-30 11:47:44,417 - expt-debug - INFO - Using device: cuda
+2025-04-30 11:47:44,638 - expt-debug - INFO - > GPU: Tesla V100-PCIE-16GB
+2025-04-30 11:54:57,553 - expt-debug - INFO - 
+2025-04-30 11:54:57,613 - expt-debug - INFO - ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+2025-04-30 11:54:57,613 - expt-debug - INFO - ++++++++++++++++++++++++++ Experiment: debug ++++++++++++++++++++++++++
+2025-04-30 11:54:57,614 - expt-debug - INFO - Description: Training model trained in expt-41 with ignored fault locations 3,6.
+2025-04-30 11:54:57,614 - expt-debug - INFO - 
+2025-04-30 11:54:57,614 - expt-debug - INFO - Dataset info.
+2025-04-30 11:54:57,614 - expt-debug - INFO - > Data names: ['microgrid_fault_dataset_rms', 'microgrid_steady_state_rms']
+2025-04-30 11:54:57,614 - expt-debug - INFO - > Case range: [1, 2700]
+2025-04-30 11:54:57,614 - expt-debug - INFO - 
+2025-04-30 11:54:57,615 - expt-debug - INFO - Loading model.
+2025-04-30 11:54:58,495 - expt-debug - INFO - > No. of parameters: 26343
+2025-04-30 11:54:58,495 - expt-debug - INFO - 
+2025-04-30 11:54:58,504 - expt-debug - INFO - Using device: cuda
+2025-04-30 11:54:58,899 - expt-debug - INFO - > GPU: Tesla V100-PCIE-16GB
+2025-04-30 12:00:04,362 - expt-debug - INFO - Dataset Size: 75780
+2025-04-30 12:00:06,825 - expt-debug - INFO - 
+2025-04-30 12:00:06,826 - expt-debug - INFO - Loading pretrained model from: results/expt-41| 2025-04-26 18:16/weights/epoch-150.pt
+2025-04-30 12:00:06,826 - expt-debug - INFO - > Used data info:: names: ['microgrid_steady_state_rms', 'microgrid_fault_dataset_rms'], range: [1, 2700]
+2025-04-30 12:00:06,826 - expt-debug - INFO - > epoch:150:: train_loss:0.5967486028530931 | train_f1_score: 0.7787272861008082
+2025-04-30 12:00:06,903 - expt-debug - INFO - 
+2025-04-30 12:00:06,903 - expt-debug - INFO - ========== Starting model training. ==========
+2025-04-30 12:00:43,740 - expt-44 - INFO - epoch:68:: train_loss:0.5606497288930001 | train_f1_score: 0.8004866535098386
