@@ -32,7 +32,9 @@ def testModel(test_dataloader, model, device, criteria):
     out = model(torch.cat([data.x, pe], dim=2), data.edge_index, data.edge_attr).cpu()
     data = data.cpu()   
     print('\nSample test') 
-    print('> model output', list(softmax(out.detach(), dim=0)))
+    prob = softmax(out.detach(), dim=0, dtype=torch.float32).numpy().tolist()
+    trimmed_prob = [float(f"{num:.5f}") for num in prob]
+    print('> model output', trimmed_prob)
     print(f'> predicted class: {out.argmax()}, actual class: {data.y[0]-1}')
 
     test_loss = 0
@@ -118,9 +120,10 @@ def load_model(model, optimizer, logger, config):
             if k in model_state and v.shape == model_state[k].shape and ('layers' in k):
                 filtered_dict[k] = v
         model_state.update(filtered_dict)
-    
-    model.load_state_dict(model_state)
-    optimizer.load_state_dict(checkpoint['optim'])
+        model.load_state_dict(model_state)
+    else:
+        model.load_state_dict(checkpoint['model'])
+        optimizer.load_state_dict(checkpoint['optim'])
 
     return model, optimizer
 
@@ -335,12 +338,19 @@ def runProcess(config):
     ## prepare experiment directory
     now = datetime.now(pytz.timezone('Asia/Kolkata'))
     tm = now.strftime('%Y-%m-%d %H:%M')
-    results = os.path.join(config['result_dir'], 'results')
+
+    if config['task'] == 'detect':
+        results = os.path.join(config['result_dir'], 'detect_results')
+    elif config['task'] == 'locate':
+        results = os.path.join(config['result_dir'], 'locate_results')
+    else:
+        raise NameError
+    
     os.makedirs(results, exist_ok=True)
     entries = os.listdir(results)
     
     expt = "debug" if config['test_mode'] else get_max_expt_number(entries)+1
-    result_dir = os.path.join(results, f'expt-{expt}| {tm}') if not config['test_mode'] else os.path.join(config['result_dir'], 'debug')
+    result_dir = os.path.join(results, f'expt-{expt}| {tm}') if not config['test_mode'] else os.path.join(config['result_dir'], 'results', 'debug')
     
     os.makedirs(result_dir, exist_ok=True)
     os.makedirs(os.path.join(result_dir, 'weights'), exist_ok=True)
@@ -352,7 +362,7 @@ def runProcess(config):
 
     ## prepare logging setup
     logging = logging_setup()
-    logger = get_logger(f'expt-{expt}', result_dir)
+    logger = get_logger(f'{config['task']}: expt-{expt}', result_dir)
 
     logger.info('')
     logger.info('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
@@ -368,16 +378,16 @@ def runProcess(config):
     logger.info('Loading model.')
     ## load model
     model = PowerFormer(d_model=config['model']['d_model'],
-                              num_nodes=config['dataset']['n_nodes'],
-                              num_heads=config['model']['n_heads'],
-                              node_features=config['dataset']['n_node_features']+config['dataset']['k'],
-                              edge_features=config['dataset']['n_edge_features'],
-                              dropout=config['model']['dropout'],
-                              use_bias=config['model']['use_bias'],
-                              num_layers=config['model']['n_layers'], 
-                              num_fault_types=config['dataset']['num_fault_types'],
-                              num_fault_locations=config['dataset']['num_fault_locations'],
-                              task = config['task'])
+                        num_nodes=config['dataset']['n_nodes'],
+                        num_heads=config['model']['n_heads'],
+                        node_features=config['dataset']['n_node_features']+config['dataset']['k'],
+                        edge_features=config['dataset']['n_edge_features'],
+                        dropout=config['model']['dropout'],
+                        use_bias=config['model']['use_bias'],
+                        num_layers=config['model']['n_layers'], 
+                        num_fault_types=config['dataset']['num_fault_types'],
+                        num_fault_locations=config['dataset']['num_fault_locations'],
+                        task = config['task'])
 
     model = model.to(torch.float64)
     if not config['training']['retrain_model']:
