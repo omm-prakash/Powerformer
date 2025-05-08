@@ -64,13 +64,14 @@ def prepareData(config, logger, rank=None, world_size=None):
                           window_size=config['dataset']['window_size'],
                           n_nodes=config['dataset']['n_nodes'],
                           n_edges=config['dataset']['n_edges'],
-                          n_edge_features=config['dataset']['n_edge_features'],
-                          n_node_features=config['dataset']['n_node_features'],
+                          edge_features=config['dataset']['edge_features'],
+                          node_features=config['dataset']['node_features'],
                           case_range=config['dataset']['case_range'], 
                           stride=config['dataset']['stride'],
                           data_portion=config['dataset']['data_portion_from_end'],
                           ignored_fault_locations=config['dataset']['ignored_fault_locations'],
-                          task=config['task'])
+                          task=config['task'],
+                          current_as_node_features=config['dataset']['current_as_node_features'])
     
     dataset = transformData(k=config['dataset']['k'], dataset=dataset)
     logger.info(f'Dataset Size: {len(dataset)}')

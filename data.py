@@ -8,31 +8,17 @@ from tqdm import tqdm
 from torch_geometric.data import Data
 from torch_geometric.transforms import AddLaplacianEigenvectorPE, Compose, NormalizeFeatures, ToUndirected
 
-node_features = ['N1_rms[kV]', 'N2_rms[kV]', 'N3_rms[kV]',    # node 1: 0
-                'N4_rms[kV]', 'N5_rms[kV]', 'N6_rms[kV]',    # node 2: 1
-                'N7_rms[kV]', 'N8_rms[kV]', 'N9_rms[kV]',    # node 3: 2
-                'N16_rms[kV]','N17_rms[kV]', 'N18_rms[kV]',  # node 6: 3
-                'N19_rms[kV]',  'N20_rms[kV]', 'N21_rms[kV]']# node 7: 4
-                
-edge_features = ['I121A_rms[kA]', 'I121B_rms[kA]', 'I121C_rms[kA]',  # TL 1-2
-                'I232A_rms[kA]', 'I232B_rms[kA]', 'I232C_rms[kA]',  # TL 2-3 
-                'I264A_rms[kA]', 'I264B_rms[kA]', 'I264C_rms[kA]',  # TL 2-6
-                'I765A_rms[kA]', 'I765B_rms[kA]', 'I765C_rms[kA]',  # TL 7-6
-                'S3IA_rms[kA]', 'S3IB_rms[kA]', 'S3IC_rms[kA]']     # TL 3-7
-
-# print('Total node features:', len(node_features))
-# print('Total edge features:', len(edge_features))
-
 def extractData(data_path:str, 
                 data_names:list, 
                 window_size:int, 
                 stride:int, 
                 n_nodes:int, 
                 n_edges:int, 
-                n_node_features:int, 
-                n_edge_features:int,
+                node_features:list,
+                edge_features:list,
                 ignored_fault_locations:list,
-                task:str, 
+                task:str,
+                current_as_node_features:bool, 
                 case_range=None,
                 data_portion=0.5):
     assert task in ['detect', 'locate'], f"Invalid task type: {task}"
@@ -52,6 +38,12 @@ def extractData(data_path:str,
                     [1, 3, 2, 4, 3]
                 ])
 
+    assert len(node_features)%n_nodes == 0
+    assert len(edge_features)%n_edges == 0
+
+    n_edge_features = len(edge_features)//n_edges
+    n_node_features = len(node_features)//n_nodes
+
     edge_dataset = torch.empty(0, n_edges, window_size, n_edge_features).to(torch.float32)
     node_dataset = torch.empty(0, n_nodes, window_size, n_node_features).to(torch.float32)
     label_dataset = torch.empty(0).to(torch.int8)
@@ -68,7 +60,6 @@ def extractData(data_path:str,
 
             if fault_location in ignored_fault_locations:
                 continue
-            voltage_df = pd.read_csv(file.replace('ICaseNum', 'VCaseNum'), index_col=False)
 
             complete_edge_data = torch.tensor(current_df[edge_features].apply(lambda col: col.fillna(col.mean()), axis=0).to_numpy())
             steady_state_edge_data = complete_edge_data[:100]
@@ -80,7 +71,19 @@ def extractData(data_path:str,
             edge_data = edge_data.to(torch.float64)
             # print('Edge data shape:', edge_data.size())
 
-            complete_node_data = torch.tensor(voltage_df[node_features].apply(lambda col: col.fillna(col.mean()), axis=0).to_numpy())
+            if current_as_node_features:
+                missing_columns = [col for col in node_features if col not in current_df.columns]
+                if missing_columns:
+                    raise ValueError(f"The following node_features columns are missing in current_df: {missing_columns}")
+                complete_node_data = torch.tensor(current_df[node_features].apply(lambda col: col.fillna(col.mean()), axis=0).to_numpy())
+
+            else:
+                voltage_df = pd.read_csv(file.replace('ICaseNum', 'VCaseNum'), index_col=False)
+                missing_columns = [col for col in node_features if col not in voltage_df.columns]
+                if missing_columns:
+                    raise ValueError(f"The following node_features columns are missing in voltage_df: {missing_columns}")
+                complete_node_data = torch.tensor(voltage_df[node_features].apply(lambda col: col.fillna(col.mean()), axis=0).to_numpy())
+
             steady_state_node_data = complete_node_data[:100]
             steady_state_node_data = steady_state_node_data.unfold(0, window_size, stride).view(-1, n_nodes, n_node_features, window_size).transpose(-1, -2)
             steady_state_node_data = steady_state_node_data.to(torch.float64) 
@@ -125,7 +128,7 @@ def extractData(data_path:str,
     ndata = edge_dataset.size(0)
     dataset = []
 
-    for i in range(ndata): #, desc='Building Graph Dataset'):
+    for i in range(ndata):
         dataset.append(Data(x=node_dataset[i], edge_index=edge_index, edge_attr=edge_dataset[i], y=label_dataset[i]))
 
     return dataset
