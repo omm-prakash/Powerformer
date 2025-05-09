@@ -19,7 +19,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data.distributed import DistributedSampler
 from torch.distributed import init_process_group, destroy_process_group
 
-from layers import GraphTransformer
+from layers import GraphTransformer, PowerFormer
 from data import extractData, transformData
 from utils import *
 
@@ -32,7 +32,9 @@ def testModel(test_dataloader, model, device, criteria):
     out = model(torch.cat([data.x, pe], dim=2), data.edge_index, data.edge_attr).cpu()
     data = data.cpu()   
     print('\nSample test') 
-    print('> model output', softmax(out.detach().numpy()))
+    prob = softmax(out.detach(), dim=0, dtype=torch.float32).numpy().tolist()
+    trimmed_prob = [float(f"{num:.5f}") for num in prob]
+    print('> model output', trimmed_prob)
     print(f'> predicted class: {out.argmax()}, actual class: {data.y[0]-1}')
 
     test_loss = 0
@@ -62,12 +64,14 @@ def prepareData(config, logger, rank=None, world_size=None):
                           window_size=config['dataset']['window_size'],
                           n_nodes=config['dataset']['n_nodes'],
                           n_edges=config['dataset']['n_edges'],
-                          n_edge_features=config['dataset']['n_edge_features'],
-                          n_node_features=config['dataset']['n_node_features'],
+                          edge_features=config['dataset']['edge_features'],
+                          node_features=config['dataset']['node_features'],
                           case_range=config['dataset']['case_range'], 
                           stride=config['dataset']['stride'],
                           data_portion=config['dataset']['data_portion_from_end'],
-                          ignored_fault_locations=config['dataset']['ignored_fault_locations'])
+                          ignored_fault_locations=config['dataset']['ignored_fault_locations'],
+                          task=config['task'],
+                          current_as_node_features=config['dataset']['current_as_node_features'])
     
     dataset = transformData(k=config['dataset']['k'], dataset=dataset)
     logger.info(f'Dataset Size: {len(dataset)}')
@@ -109,8 +113,18 @@ def load_model(model, optimizer, logger, config):
     logger.info(f"Loading pretrained model from: {config['training']['pretrained_model_path']}")
     logger.info(f"> Used data info:: names: {checkpoint['data_names']}, range: {checkpoint['case_range']}")
     logger.info(f"> epoch:{checkpoint['epoch']}:: train_loss:{checkpoint['loss']} | train_f1_score: {checkpoint['f1_score']}")
-    model.load_state_dict(checkpoint['model'])
-    optimizer.load_state_dict(checkpoint['optim'])
+
+    if config['training']['only_load_attention']:
+        model_state = model.state_dict()
+        filtered_dict = {}
+        for k, v in checkpoint['model'].items():
+            if k in model_state and v.shape == model_state[k].shape and ('layers' in k):
+                filtered_dict[k] = v
+        model_state.update(filtered_dict)
+        model.load_state_dict(model_state)
+    else:
+        model.load_state_dict(checkpoint['model'])
+        optimizer.load_state_dict(checkpoint['optim'])
 
     return model, optimizer
 
@@ -131,14 +145,14 @@ def trainModel(config, train_dataloader, test_dataloader, model, device, logger,
     train_losses, val_losses = [], []
     train_f1_scores, val_f1_scores = [], []
     logger.info('========== Starting model training. ==========')
-    for epoch in range(config['training']['epochs']):
+    for epoch in range(1, config['training']['epochs']+1):
         torch.cuda.empty_cache()
         epoch_losses = 0
         model.train()        
         preds, actuals, i = [], [], 0
         
         ## train model 
-        for batch in tqdm(train_dataloader, desc=f'epoch-{epoch}:: train'):
+        for batch in train_dataloader:
             x = batch.x.to(device) # shape: (n_nodes, time, node_features)
             laplacian_pe = batch.laplacian_eigenvector_pe.unsqueeze(1).expand(-1, config['dataset']['window_size'], -1).to(device)
             x = torch.cat([x, laplacian_pe], dim=2) # shape: (n_nodes, time, node_features+PE)
@@ -158,8 +172,6 @@ def trainModel(config, train_dataloader, test_dataloader, model, device, logger,
 
             preds.append(int(out.argmax()))
             actuals.append(int(batch.y[0])-1)
-            # preds.append(out.cpu().argmax())
-            # actuals.append(int(batch.y.cpu()[0]-1))
             i += 1
             logger.debug(f'epoch: {epoch+1}-batch: {i+1} :: loss: {loss.item()}')
 
@@ -327,12 +339,19 @@ def runProcess(config):
     ## prepare experiment directory
     now = datetime.now(pytz.timezone('Asia/Kolkata'))
     tm = now.strftime('%Y-%m-%d %H:%M')
-    results = os.path.join(config['result_dir'], 'results')
+
+    if config['task'] == 'detect':
+        results = os.path.join(config['result_dir'], 'detect_results')
+    elif config['task'] == 'locate':
+        results = os.path.join(config['result_dir'], 'locate_results')
+    else:
+        raise NameError
+    
     os.makedirs(results, exist_ok=True)
     entries = os.listdir(results)
     
     expt = "debug" if config['test_mode'] else get_max_expt_number(entries)+1
-    result_dir = os.path.join(results, f'expt-{expt}| {tm}') if not config['test_mode'] else os.path.join(config['result_dir'], 'debug')
+    result_dir = os.path.join(results, f'expt-{expt}| {tm}') if not config['test_mode'] else os.path.join(config['result_dir'], 'results', 'debug')
     
     os.makedirs(result_dir, exist_ok=True)
     os.makedirs(os.path.join(result_dir, 'weights'), exist_ok=True)
@@ -341,15 +360,16 @@ def runProcess(config):
     copy_file(os.path.join(os.getcwd(), args.config_file), os.path.join(result_dir, 'config.yml'))
     copy_file(os.path.join(os.getcwd(), 'layers.py'), os.path.join(result_dir, 'layers.py'))
     copy_file(os.path.join(os.getcwd(), 'train.py'), os.path.join(result_dir, 'train(multi-gpu).py'))
+    copy_file(os.path.join(os.getcwd(), 'data.py'), os.path.join(result_dir, 'data.py'))
 
     ## prepare logging setup
     logging = logging_setup()
-    logger = get_logger(f'expt-{expt}', result_dir)
+    logger = get_logger(f'{config['task']}: expt-{expt}', result_dir)
 
     logger.info('')
     logger.info('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
     logger.info(f'++++++++++++++++++++++++++ Experiment: {expt} ++++++++++++++++++++++++++')
-    logger.info(f'Description: {config['desc']}')
+    logger.info(f"Description: {config['desc']}")
 
     logger.info('')
     logger.info('Dataset info.')
@@ -359,16 +379,18 @@ def runProcess(config):
     logger.info('')
     logger.info('Loading model.')
     ## load model
-    model = GraphTransformer(d_model=config['model']['d_model'],
-                             num_nodes=config['dataset']['n_nodes'],
-                             num_heads=config['model']['n_heads'],
-                             node_features=config['dataset']['n_node_features']+config['dataset']['k'],
-                             edge_features=config['dataset']['n_edge_features'],
-                             dropout=config['model']['dropout'],
-                             use_bias=config['model']['use_bias'],
-                             num_layers=config['model']['n_layers'], 
-                             num_fault_types=config['dataset']['num_fault_types'])
-    
+    model = PowerFormer(d_model=config['model']['d_model'],
+                        num_nodes=config['dataset']['n_nodes'],
+                        num_heads=config['model']['n_heads'],
+                        node_features=config['dataset']['n_node_features']+config['dataset']['k'],
+                        edge_features=config['dataset']['n_edge_features'],
+                        dropout=config['model']['dropout'],
+                        use_bias=config['model']['use_bias'],
+                        num_layers=config['model']['n_layers'], 
+                        num_fault_types=config['dataset']['num_fault_types'],
+                        num_fault_locations=config['dataset']['num_fault_locations'],
+                        task = config['task'])
+
     model = model.to(torch.float64)
     if not config['training']['retrain_model']:
         model.initialize_weights()

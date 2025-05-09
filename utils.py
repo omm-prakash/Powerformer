@@ -54,11 +54,13 @@ def copy_file(src_file, dest_path):
 
 def plot_metrics(train_value, val_value, save_path, name=''):
     train_epochs, train_values = zip(*train_value)
-    val_epochs, val_values = zip(*val_value)
+    if len(val_value) > 0:
+        val_epochs, val_values = zip(*val_value)
 
     plt.figure(figsize=(10, 6))
     plt.plot(train_epochs, train_values, label=f'Training {name}', marker='o', linestyle='-')
-    plt.plot(val_epochs, val_values, label=f'Validation {name}', marker='x', linestyle='--')
+    if len(val_value) > 0:
+        plt.plot(val_epochs, val_values, label=f'Validation {name}', marker='x', linestyle='--')
 
     plt.xlabel('Epochs')
     plt.ylabel(name)
