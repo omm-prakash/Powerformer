@@ -360,6 +360,7 @@ def runProcess(config):
     copy_file(os.path.join(os.getcwd(), args.config_file), os.path.join(result_dir, 'config.yml'))
     copy_file(os.path.join(os.getcwd(), 'layers.py'), os.path.join(result_dir, 'layers.py'))
     copy_file(os.path.join(os.getcwd(), 'train.py'), os.path.join(result_dir, 'train(multi-gpu).py'))
+    copy_file(os.path.join(os.getcwd(), 'data.py'), os.path.join(result_dir, 'data.py'))
 
     ## prepare logging setup
     logging = logging_setup()
