@@ -73,7 +73,7 @@ class MultiHeadAttentionLayer(nn.Module):
 
         score = (Qh[edge_index[1]] @ torch.transpose(Kh[edge_index[0]],-1,-2)) # (n_edges, heads, time, time)
         score = score / torch.sqrt(torch.tensor(self.k_d, dtype=torch.float32, requires_grad=False)) # (n_edges, heads, time, time)
-        score = score + Ee # (n_edges, heads, time, time)
+        score = score * Ee # (n_edges, heads, time, time)
         score = score.view(score.size(0), self.heads, -1) # (n_edges, heads, time*time)
         score = softmax(score, edge_index[1], dim=0) # (n_edges, heads, time*time)
         score = score.view(-1, self.heads, interval, interval) # (n_edges, heads, time, time)
@@ -83,7 +83,9 @@ class MultiHeadAttentionLayer(nn.Module):
         x.index_add_(dim=0, index=edge_index[1], source=score, alpha=1) # (n_nodes, heads, time, k_d)
         x = x.transpose(1,2).contiguous().view(x.size(0),-1,self.d_model) # (n_nodes, time, d_model)
 
-        return x
+        e = score.transpose(1,2).contiguous().view(score.size(0), -1, self.d_model) # (n_edges, time, d_model)
+
+        return x,e
 
 class GraphTransformerLayer(nn.Module):
     def __init__(self, d_model, num_heads, node_features, edge_features, dropout, use_bias, *args, **kwargs):
@@ -92,6 +94,11 @@ class GraphTransformerLayer(nn.Module):
         self.Oh = nn.Linear(d_model, node_features) 
         self.norm = nn.LayerNorm(normalized_shape=node_features)
         self.residual = ResidualBlock(node_features, dropout)        
+
+        self.Oh_e = nn.Linear(d_model, edge_features) 
+        self.norm_e = nn.LayerNorm(normalized_shape=edge_features)
+        self.residual_e = ResidualBlock(edge_features, dropout)        
+
         self.attention = MultiHeadAttentionLayer(d_model, num_heads, node_features, edge_features, use_bias)
 
     def forward(self, x, edge_index, edge_attr):
@@ -103,13 +110,20 @@ class GraphTransformerLayer(nn.Module):
         """
         
         x_in = x # (n_nodes, time, node_features)
-        x = self.attention(x, edge_index, edge_attr) # (n_nodes, time, d_model)
+        e_in = edge_attr # (n_edges, time, edge_features)
+        x,e = self.attention(x, edge_index, edge_attr) # (n_nodes, time, d_model), (n_edges, time, d_model)
+
         x = self.Oh(x) # (n_nodes, time, node_features)
         x = x + x_in # (n_nodes, time, node_features)
         x = self.norm(x) # (n_nodes, time, node_features)
         x = self.residual(x) # (n_nodes, time, node_features)
 
-        return x 
+        e = self.Oh_e(e) # (n_edges, time, edge_features)
+        e = e + e_in # (n_edges, time, edge_features)
+        e = self.norm_e(e) # (n_edges, time, edge_features)
+        e = self.residual_e(e) # (n_edges, time, edge_features)
+
+        return x,e 
     
 class GraphTransformer(nn.Module):
     def __init__(self, d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, *args, **kwargs):
@@ -126,7 +140,7 @@ class GraphTransformer(nn.Module):
     def forward(self, x, edge_index, edge_attr):
 
         for layer in self.layers:
-            x = layer(x, edge_index, edge_attr) # (n_nodes, time, node_features)
+            x,e = layer(x, edge_index, edge_attr) # (n_nodes, time, node_features), (n_edges, time, edge_features)
 
         x = x.mean(dim=1) # (n_nodes, node_features)
         x = self.linear(x) # (n_nodes, d_model)
@@ -134,7 +148,12 @@ class GraphTransformer(nn.Module):
         x = x.mean(dim=-1) # (n_nodes,)
         x = self.norm(x) # (n_nodes,)
 
-        return x
+        e = e.mean(dim=1) # (n_edges, node_features)
+        e = self.linear(e) # (n_edges, d_model)
+        e = e.mean(dim=-1) # (n_edges,)
+        e = self.norm(e) # (n_edges,)
+
+        return x,e
     
     def initialize_weights(self):
         for m in self.modules():
@@ -162,15 +181,15 @@ class GraphTransformer(nn.Module):
         return
 
 class PowerFormer(GraphTransformer):
-    def __init__(self, d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, num_fault_types, num_fault_locations, task, *args, **kwargs):
+    def __init__(self, d_model, num_nodes, num_edges, num_heads, node_features, edge_features, dropout, use_bias, num_layers, num_fault_types, num_fault_locations, task, *args, **kwargs):
         super().__init__(d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, *args, **kwargs)
 
-        assert task in ['detect', 'locate'], f"Invalid task type: {task}"
+        # assert task in ['detect', 'locate'], f"Invalid task type: {task}"
         
-        if task == 'detect':
-            self.num_classes = num_fault_types
-        else:
-            self.num_classes = num_fault_locations
+        # if task == 'detect':
+        #     self.num_classes = num_fault_types
+        # else:
+        #     self.num_classes = num_fault_locations
 
         self.out_layer = nn.Sequential(
             nn.Linear(num_nodes, 2*num_nodes),
@@ -178,14 +197,24 @@ class PowerFormer(GraphTransformer):
             nn.Linear(2*num_nodes, num_nodes),
             nn.Dropout(dropout),
             nn.SiLU(),
-            nn.Linear(num_nodes, self.num_classes )
+            nn.Linear(num_nodes, num_fault_types)
+        )
+
+        self.out_layer_e = nn.Sequential(
+            nn.Linear(num_edges, 2*num_edges),
+            nn.SiLU(),
+            nn.Linear(2*num_edges, num_edges),
+            nn.Dropout(dropout),
+            nn.SiLU(),
+            nn.Linear(num_edges, num_fault_locations)
         )
 
     def forward(self, x, edge_index, edge_attr):
-        x = super().forward(x, edge_index, edge_attr) # (n_nodes,)
+        x,e = super().forward(x, edge_index, edge_attr) # (n_nodes,), (n_edges,)
         x = self.out_layer(x) # (num_fault_types,)
+        e = self.out_layer_e(e) # (num_fault_locations,)
 
-        return x
+        return x,e
     
     def initialize_weights(self):
         return super().initialize_weights()
