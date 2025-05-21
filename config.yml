@@ -2,13 +2,13 @@ n_workers: 9
 random_seed: 11
 result_dir: '/scratch/opsahoo.eee20.itbhu/Thesis'
 test_mode: false
-desc: "Locate Fault: contining expt-4 to all data"
+desc: "Detect Fault: contining expt-58 & avoiding type-1 fault files."
 
-task: 'locate' # e.g. "detect" or "locate"
+task: 'detect' # e.g. "detect" or "locate"
 
 dataset:
-  data_path: '/scratch/opsahoo.eee20.itbhu/Thesis/SmartGrid Datasets'
-  data_names: ['microgrid_fault_dataset_rms', 'All_DER_outage_grid_fault_CSV', 'All_DER_outage_islanded_fault_CSV'] 
+  data_path: '/scratch/opsahoo.eee20.itbhu/Thesis/New SmartGrid Datasets'
+  data_names: ['microgrid_fault_dataset_rms'] #, 'All_DER_outage_grid_fault_CSV', 'All_DER_outage_islanded_fault_CSV'] 
   # 'microgrid_steady_state_rms'] #, 'All_DER_outage_grid_fault_CSV', 'microgrid_steady_state_rms_islanded', 'All_DER_outage_islanded_fault_CSV']
 
   window_size: 25
@@ -38,7 +38,7 @@ dataset:
   num_fault_types: 7
   num_fault_locations: 8
   case_range: [1,9000]  # Using a list instead of a tuple
-  data_portion_from_end: 0.2
+  data_portion_from_end: 0.3
   ignored_fault_locations: [3,6] # Ignored faults locations 
 
   test_ratio: 0.2
@@ -54,7 +54,7 @@ model:
 training:
   learning_rate: 0.0001
   label_smoothing: 0
-  epochs: 200
+  epochs: 300
   validation: true
   val_frequency: 5
   save_model: true
@@ -67,7 +67,7 @@ training:
   freeze_attention_layers: [0,1,2] # list belongs to {0, 1, ..., n_layers-1}
 
   retrain_model: true
-  pretrained_model_path: 'locate_results/expt-4| 2025-05-07 19:17/weights/epoch-180.pt'
+  pretrained_model_path: 'detect_results/expt-59| 2025-05-15 18:57/weights/epoch-300.pt'
   only_load_attention: false
 
   multi_gpu: false
