@@ -70,10 +70,11 @@ class MultiHeadAttentionLayer(nn.Module):
         Ee = torch.transpose(Ee.view(-1, interval, self.heads, self.k_d), 1, 2) # (n_edges, heads, time, k_d)
 
         Ee = Ee @ torch.transpose(Ee, -1, -2) # (n_edges, heads, time, time)
+        # Ee = Ee / torch.sqrt(torch.tensor(self.k_d, dtype=torch.float32, requires_grad=False)) # (n_edges, heads, time, time)
 
         score = (Qh[edge_index[1]] @ torch.transpose(Kh[edge_index[0]],-1,-2)) # (n_edges, heads, time, time)
         score = score / torch.sqrt(torch.tensor(self.k_d, dtype=torch.float32, requires_grad=False)) # (n_edges, heads, time, time)
-        score = score + Ee # (n_edges, heads, time, time)
+        score = score @ Ee # (n_edges, heads, time, time)
         score = score.view(score.size(0), self.heads, -1) # (n_edges, heads, time*time)
         score = softmax(score, edge_index[1], dim=0) # (n_edges, heads, time*time)
         score = score.view(-1, self.heads, interval, interval) # (n_edges, heads, time, time)

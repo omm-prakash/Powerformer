@@ -6,7 +6,7 @@ from datetime import datetime
 from tqdm import tqdm
 
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import f1_score
+from sklearn.metrics import f1_score, recall_score, precision_score
 from torch.nn.functional import softmax
 from torch_geometric.loader import DataLoader
 
@@ -18,14 +18,17 @@ from torch.optim.lr_scheduler import StepLR
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data.distributed import DistributedSampler
 from torch.distributed import init_process_group, destroy_process_group
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
 
 from layers import GraphTransformer, PowerFormer
-from data import extractData, transformData
+# from data import extractData, transformData
+from data_new import extractData, transformData
 from utils import *
 
 # ref: https://github.com/pyg-team/pytorch_geometric/blob/master/examples/mutag_gin.py
 
-def testModel(test_dataloader, model, device, criteria):
+def testModel(test_dataloader, model, device, criteria, result_dir):
     model.eval()    
     data = next(iter(test_dataloader)).to(device)
     pe = data.laplacian_eigenvector_pe.unsqueeze(1).expand(-1, config['dataset']['window_size'], -1).to(device)
@@ -56,7 +59,18 @@ def testModel(test_dataloader, model, device, criteria):
         preds.append(int(out.argmax()))
         actuals.append(int(batch.y[0])-1)
 
-    return out, test_loss/len(test_dataloader), f1_score(actuals, preds, average='macro')
+    r = recall_score(actuals, preds, average='macro')
+    p = precision_score(actuals, preds, average='macro')
+    cm = confusion_matrix(actuals, preds)
+    class_names = [str(i+1) for i in range(cm.shape[0])]
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
+    fig, ax = plt.subplots(figsize=(8, 6))  # Adjust figure size as needed
+    disp.plot(ax=ax, cmap='Blues', values_format='d')  # 'd' for integer display
+
+    plt.savefig(os.path.join(result_dir, 'plots', "confusion_matrix.png"), dpi=300, bbox_inches='tight')
+    plt.close()
+
+    return out, test_loss/len(test_dataloader), f1_score(actuals, preds, average='macro'), r, p
 
 def prepareData(config, logger, rank=None, world_size=None):
     dataset = extractData(data_path=config['dataset']['data_path'],
@@ -177,17 +191,19 @@ def trainModel(config, train_dataloader, test_dataloader, model, device, logger,
 
         ## compute metrics
         train_f1_score = f1_score(actuals, preds, average='macro')
+        r = recall_score(actuals, preds, average='macro')
+        p = precision_score(actuals, preds, average='macro')
         train_loss = epoch_losses/len(train_dataloader)
-        logger.info(f'epoch:{epoch}:: train_loss:{train_loss} | train_f1_score: {train_f1_score}')
+        logger.info(f'epoch:{epoch}:: train_loss:{train_loss} | train_f1_score: {train_f1_score} | prec: {p} | recall: {r}')
         train_losses.append((epoch,train_loss))
         train_f1_scores.append((epoch, train_f1_score))
 
         ## validation step
         if config['training']['validation'] and epoch%config['training']['val_frequency']==0:
-            out, test_loss, test_f1_score = testModel(test_dataloader, model, device, criteria)
+            out, test_loss, test_f1_score, r, p = testModel(test_dataloader, model, device, criteria, result_dir)
             val_losses.append((epoch, test_loss))
             val_f1_scores.append((epoch, test_f1_score))
-            logger.info(f'             :: val_loss:{test_loss} | val_f1_score:{test_f1_score}')
+            logger.info(f'             :: val_loss:{test_loss} | val_f1_score:{test_f1_score} | recall: {r} | prec: {p}')
 
         ## save model
         if config['training']['save_model'] and epoch%config['training']['save_frequency']==0 and epoch!=0:
@@ -305,7 +321,7 @@ def ddp_train(rank, world_size, model, config, logger, result_dir):
 
             ## validation step
             if config['training']['validation'] and epoch%config['training']['val_frequency']==0:
-                out, test_loss, test_f1_score = testModel(test_dataloader, model, rank, criteria)
+                out, test_loss, test_f1_score = testModel(test_dataloader, model, rank, criteria, result_dir)
                 val_losses.append((epoch, test_loss))
                 val_f1_scores.append((epoch, test_f1_score))
                 logger.info(f'             :: val_loss:{test_loss} | val_f1_score:{test_f1_score}')
@@ -359,8 +375,8 @@ def runProcess(config):
 
     copy_file(os.path.join(os.getcwd(), args.config_file), os.path.join(result_dir, 'config.yml'))
     copy_file(os.path.join(os.getcwd(), 'layers.py'), os.path.join(result_dir, 'layers.py'))
-    copy_file(os.path.join(os.getcwd(), 'train.py'), os.path.join(result_dir, 'train(multi-gpu).py'))
-    copy_file(os.path.join(os.getcwd(), 'data.py'), os.path.join(result_dir, 'data.py'))
+    copy_file(os.path.join(os.getcwd(), 'train(multi-gpu).py'), os.path.join(result_dir, 'train.py'))
+    copy_file(os.path.join(os.getcwd(), 'data_new.py'), os.path.join(result_dir, 'data.py'))
 
     ## prepare logging setup
     logging = logging_setup()
