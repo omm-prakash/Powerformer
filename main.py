@@ -3,27 +3,11 @@ import torch
 import yaml
 import pytz
 from datetime import datetime
-# from tqdm import tqdm
-
-# from sklearn.model_selection import train_test_split
-# from sklearn.metrics import f1_score
-# from torch.nn.functional import softmax
-# from torch_geometric.loader import DataLoader
-
-# Distributed training
-# import torch.distributed as dist
-# import torch.multiprocessing as mp
-# from torch.optim.lr_scheduler import StepLR
-# # DistributedDataParallel: Use single-machine multi-GPU 
-# from torch.nn.parallel import DistributedDataParallel as DDP
-# from torch.utils.data.distributed import DistributedSampler
-# from torch.distributed import init_process_group, destroy_process_group
 
 from train import trainModel
 from train_multi_gpu import init_dpp
 
 from layers import PowerFormer
-# from data import extractData, transformData
 from utils import *
 
 # ref: https://github.com/pyg-team/pytorch_geometric/blob/master/examples/mutag_gin.py
@@ -31,6 +15,7 @@ from utils import *
 def runProcess(config):
     w = Watch()
     w.start()
+
     ## prepare experiment directory
     now = datetime.now(pytz.timezone('Asia/Kolkata'))
     tm = now.strftime('%Y-%m-%d %H:%M')
@@ -73,10 +58,10 @@ def runProcess(config):
 
     logger.info('')
     logger.info('Loading model.')
+
     ## load model
     model = PowerFormer(d_model=config['model']['d_model'],
                         num_nodes=config['dataset']['n_nodes'],
-                        num_edges=config['dataset']['n_edges'],
                         num_heads=config['model']['n_heads'],
                         node_features=config['dataset']['n_node_features']+config['dataset']['k'],
                         edge_features=config['dataset']['n_edge_features'],
@@ -104,6 +89,7 @@ def runProcess(config):
         world_size = torch.cuda.device_count()
         init_dpp(world_size, model, config, logger, result_dir)
     else:
+        
         ## training process 
         train_dataloader, test_dataloader = prepareData(config, logger)
         trainModel(config, train_dataloader, test_dataloader, model, device, logger, result_dir)

@@ -188,10 +188,27 @@ def prepareData(config, logger, rank=None, world_size=None):
     train_dataset, test_dataset = train_test_split(dataset, test_size=config['dataset']['test_ratio'], random_state=config['random_seed'])
     
     if config['training']['multi_gpu']:
-        train_dataloader = DataLoader(train_dataset, 
-                                      batch_size=1, 
-                                      num_workers=config['n_workers'], 
-                                      sampler=DistributedSampler(train_dataset, shuffle=True, rank=rank, num_replicas=world_size, drop_last=True))
+        # train_dataloader = DataLoader(train_dataset, 
+        #                               batch_size=1, 
+        #                               num_workers=config['n_workers'], 
+        #                               sampler=DistributedSampler(train_dataset, shuffle=True, rank=rank, num_replicas=world_size, drop_last=True))
+        # train_dataloader = DataLoader(train_dataset,
+        #                         batch_size=1,
+        #                         sampler=DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True, drop_last=True),
+        #                         num_workers=config['n_workers'],
+        #                         pin_memory=True,
+        #                         persistent_workers=True
+        #                     )
+        data_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True, drop_last=True)
+        train_dataloader = DataLoader(
+                                    train_dataset,
+                                    batch_size=1,
+                                    sampler=data_sampler,
+                                    num_workers=config['n_workers'],           # ← disable multiprocessing in dataloader
+                                    pin_memory=False,        # ← avoid the pin memory crash
+                                    drop_last=True
+                                )
+
     else:    
         train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=config['n_workers'])
 

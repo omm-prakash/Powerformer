@@ -4,3 +4,5 @@ debug
 __pycache__
 fast.py
 log.log
+train\ copy.py
+temp.py
