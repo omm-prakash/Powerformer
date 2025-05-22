@@ -73,7 +73,7 @@ class MultiHeadAttentionLayer(nn.Module):
 
         score = (Qh[edge_index[1]] @ torch.transpose(Kh[edge_index[0]],-1,-2)) # (n_edges, heads, time, time)
         score = score / torch.sqrt(torch.tensor(self.k_d, dtype=torch.float32, requires_grad=False)) # (n_edges, heads, time, time)
-        score = score + Ee # (n_edges, heads, time, time)
+        score = score @ Ee # (n_edges, heads, time, time)
         score = score.view(score.size(0), self.heads, -1) # (n_edges, heads, time*time)
         score = softmax(score, edge_index[1], dim=0) # (n_edges, heads, time*time)
         score = score.view(-1, self.heads, interval, interval) # (n_edges, heads, time, time)
@@ -192,45 +192,3 @@ class PowerFormer(GraphTransformer):
     
     def freeze_attention_layers(self, layers):
         return super().freeze_attention_layers(layers)
-
-
-# class PowerFormerLocate(GraphTransformer):
-#     def __init__(self, d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, num_fault_types, *args, **kwargs):
-#         super().__init__(d_model, num_nodes, num_heads, node_features, edge_features, dropout, use_bias, num_layers, *args, **kwargs)
-
-#         self.out_layer = nn.Sequential(
-#             nn.Linear(num_nodes, 2*num_nodes),
-#             nn.SiLU(),
-#             nn.Linear(2*num_nodes, num_nodes),
-#             nn.Dropout(dropout),
-#             nn.SiLU(),
-#             nn.Linear(num_nodes, num_fault_types)
-#         )
-
-#     def forward(self, x, edge_index, edge_attr):
-#         x = super().forward(x, edge_index, edge_attr) # (n_nodes,)
-#         x = self.out_layer(x) # (num_fault_types,)
-
-#         return x
-    
-#     def initialize_weights(self):
-#         return super().initialize_weights()
-    
-#     def freeze_attention_layers(self, layers):
-#         return super().freeze_attention_layers(layers)
-
-            
-
-        
-
-
-
-
-
-
-        
-
-
-
-
-
