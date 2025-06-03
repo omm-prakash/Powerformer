@@ -2,18 +2,16 @@ n_workers: 0
 random_seed: 11
 result_dir: '/scratch/opsahoo.eee20.itbhu/Thesis'
 test_mode: true
-desc: "Locate Fault: contining expt-4 to all data"
+desc: "Detect Fault: contining expt-4 to all data"
 
-task: 'locate' # e.g. "detect" or "locate"
+task: 'detect' # e.g. "detect" or "locate"
 
 dataset:
-  data_path: '/scratch/opsahoo.eee20.itbhu/Thesis/SmartGrid Datasets'
-  data_names: ['microgrid_fault_dataset_rms'] #, 'All_DER_outage_grid_fault_CSV', 'All_DER_outage_islanded_fault_CSV'] 
-  # 'microgrid_steady_state_rms'] #, 'All_DER_outage_grid_fault_CSV', 'microgrid_steady_state_rms_islanded', 'All_DER_outage_islanded_fault_CSV']
-
+  data_path: '/scratch/opsahoo.eee20.itbhu/Thesis/test_dataset'
+  data_names: ['folder1'] 
   window_size: 25
   stride: 12
-  n_nodes: 5
+  n_nodes: 6
   n_edges: 5
   n_edge_features: 3
   n_node_features: 3
@@ -22,24 +20,26 @@ dataset:
   #                 'N7_rms[kV]', 'N8_rms[kV]', 'N9_rms[kV]',     # node 3: 2
   #                 'N16_rms[kV]','N17_rms[kV]', 'N18_rms[kV]',   # node 6: 3
   #                 'N19_rms[kV]',  'N20_rms[kV]', 'N21_rms[kV]'] # node 7: 4
+  edge_index: [[1,1,1,1,1], [0,2,3,4,5]]
 
+  edge_features: ['I121A_rms[kA]', 'I121B_rms[kA]', 'I121C_rms[kA]',    # TL 2-1
+                  'I322A_rms[kA]', 'I322B_rms[kA]', 'I322C_rms[kA]',    # TL 2-3
+                  'I423A_rms[kA]', 'I423B_rms[kA]', 'I423C_rms[kA]',    # TL 2-4
+                  'I524A_rms[kA]', 'I524B_rms[kA]', 'I524C_rms[kA]',    # TL 2-5
+                  'I2M5A_rms[kA]', 'I2M5B_rms[kA]', 'I2M5C_rms[kA]']    # TL 2-6
+                  
   node_features: ['I121A_rms[kA]', 'I121B_rms[kA]', 'I121C_rms[kA]',    # node 1: 0
-                  'I232A_rms[kA]', 'I232B_rms[kA]', 'I232C_rms[kA]',    # node 2: 1
-                  'S3IA_rms[kA]', 'S3IB_rms[kA]', 'S3IC_rms[kA]',    # node 3: 2
-                  'I264A_rms[kA]', 'I264B_rms[kA]', 'I264C_rms[kA]',  # node 6: 3
-                  'I765A_rms[kA]', 'I765B_rms[kA]', 'I765C_rms[kA]'] # node 7: 4
+                  'I2M5A_rms[kA]', 'I2M5B_rms[kA]', 'I2M5C_rms[kA]',    # node 2: 2
+                  'I322A_rms[kA]', 'I322B_rms[kA]', 'I322C_rms[kA]',    # node 3: 1
+                  'I423A_rms[kA]', 'I423B_rms[kA]', 'I423C_rms[kA]',    # node 4: 1
+                  'I524A_rms[kA]', 'I524B_rms[kA]', 'I524C_rms[kA]',    # node 5: 1
+                  'I2M5A_rms[kA]', 'I2M5B_rms[kA]', 'I2M5C_rms[kA]']    # node 6: 2
 
-  edge_features: ['I121A_rms[kA]', 'I121B_rms[kA]', 'I121C_rms[kA]',  # TL 1-2
-                  'I232A_rms[kA]', 'I232B_rms[kA]', 'I232C_rms[kA]',  # TL 2-3 
-                  'I264A_rms[kA]', 'I264B_rms[kA]', 'I264C_rms[kA]',  # TL 2-6
-                  'I765A_rms[kA]', 'I765B_rms[kA]', 'I765C_rms[kA]',  # TL 7-6
-                  'S3IA_rms[kA]',  'S3IB_rms[kA]',  'S3IC_rms[kA]']   # TL 3-7
-  current_as_node_features: true # if false use voltage columns as node_feature else will raise error
   num_fault_types: 7
-  num_fault_locations: 8
-  case_range: [1,9]  # Using a list instead of a tuple
-  data_portion_from_end: 0.2
-  ignored_fault_locations: [3,6] # Ignored faults locations 
+  num_fault_locations: 5
+  case_range: [1,1000]  # Using a list instead of a tuple
+  ignored_fault_locations: [] # Ignored faults locations 
+  ignored_fault_types: [1] # Ignored faults locations 
 
   test_ratio: 0.2
   k: 3 # eigen vectors to consider for PE
@@ -49,16 +49,16 @@ model:
   n_heads: 8
   dropout: 0.3
   use_bias: true
-  n_layers: 3
+  n_layers: 1
 
 training:
   learning_rate: 0.0001
   label_smoothing: 0
-  epochs: 11
+  epochs: 2
   validation: true
-  val_frequency: 5
+  val_frequency: 1
   save_model: true
-  save_frequency: 5
+  save_frequency: 1
 
   l2_regularize: true
   l2_lambda: 0.001
@@ -70,7 +70,7 @@ training:
   pretrained_model_path: 'locate_results/expt-4| 2025-05-07 19:17/weights/epoch-180.pt'
   only_load_attention: false
 
-  multi_gpu: true
+  multi_gpu: false
 
 fault:
   1: "steady_state"

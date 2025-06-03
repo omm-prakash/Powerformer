@@ -31,7 +31,7 @@ def runProcess(config):
     entries = os.listdir(results)
     
     expt = "debug" if config['test_mode'] else get_max_expt_number(entries)+1
-    result_dir = os.path.join(results, f'expt-{expt}| {tm}') if not config['test_mode'] else os.path.join(config['result_dir'], 'results', 'debug')
+    result_dir = os.path.join(results, f'expt-{expt}| {tm}') if not config['test_mode'] else os.path.join(config['result_dir'], 'debug')
     
     os.makedirs(result_dir, exist_ok=True)
     os.makedirs(os.path.join(result_dir, 'weights'), exist_ok=True)

@@ -1,6 +1,42 @@
 import os
 import torch
+
+from sklearn.metrics import f1_score, recall_score, precision_score
 from utils import *
+
+def testModel(test_dataloader, model, device, criteria, config):
+    model.eval()    
+    data = next(iter(test_dataloader)).to(device)
+    pe = data.laplacian_eigenvector_pe.unsqueeze(1).expand(-1, config['dataset']['window_size'], -1).to(device)
+    out = model(torch.cat([data.x, pe], dim=2), data.edge_index, data.edge_attr).cpu()
+    data = data.cpu()   
+    print('\nSample test') 
+    prob = softmax(out.detach(), dim=0, dtype=torch.float32).numpy().tolist()
+    trimmed_prob = [float(f"{num:.5f}") for num in prob]
+    print('> model output', trimmed_prob)
+    print(f'> predicted class: {out.argmax()}, actual class: {data.y[0]-1}')
+
+    test_loss = 0
+    preds, actuals = [], []
+    
+    ## test model
+    for batch in test_dataloader:
+        x = batch.x.to(device)
+        laplacian_pe = batch.laplacian_eigenvector_pe.unsqueeze(1).expand(-1, config['dataset']['window_size'], -1).to(device)
+        x = torch.cat([x, laplacian_pe], dim=2) # shape: (n_nodes, time, node_features+PE)
+        edge_index = batch.edge_index.to(device)
+        edge_attr = batch.edge_attr.to(device)
+        
+        out = model(x, edge_index, edge_attr)
+        y = batch.y.to(device)[0]-1 
+        loss = criteria(out, y)
+        test_loss += loss.item()
+
+        preds.append(int(out.argmax()))
+        actuals.append(int(batch.y[0])-1)
+
+    return test_loss/len(test_dataloader), preds, actuals
+
 
 def trainModel(config, train_dataloader, test_dataloader, model, device, logger, result_dir):
     model = model.to(device)    
@@ -57,10 +93,15 @@ def trainModel(config, train_dataloader, test_dataloader, model, device, logger,
 
         ## validation step
         if config['training']['validation'] and epoch%config['training']['val_frequency']==0:
-            out, test_loss, test_f1_score = testModel(test_dataloader, model, device, criteria, config)
+            test_loss, preds, actuals = testModel(test_dataloader, model, device, criteria, config)
+            test_f1_score = f1_score(actuals, preds, average='macro', zero_division=0)
+            test_precision = precision_score(actuals, preds, average='macro', zero_division=0)
+            test_recall = recall_score(actuals, preds, average='macro', zero_division=0)
+
             val_losses.append((epoch, test_loss))
             val_f1_scores.append((epoch, test_f1_score))
-            logger.info(f'             :: val_loss:{test_loss} | val_f1_score:{test_f1_score}')
+            plot_confusion_matrix(preds, actuals, os.path.join(result_dir, 'plots'))
+            logger.info(f'         :: Test:: loss:{test_loss} | f1_score:{test_f1_score} | precision: {test_precision} | recall: {test_recall}')
 
         ## save model
         if config['training']['save_model'] and epoch%config['training']['save_frequency']==0 and epoch!=0:

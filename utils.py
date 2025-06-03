@@ -8,13 +8,12 @@ import re
 import time
 import argparse
 import torch
-
+import numpy as np
 from data import extractData, transformData
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import f1_score
 from torch.nn.functional import softmax
 from torch_geometric.loader import DataLoader
-from torch.utils.data.distributed import DistributedSampler
+from sklearn.metrics import confusion_matrix
 
 class ISTFormatter(logging.Formatter):
     def formatTime(self, record, datefmt=None):
@@ -111,39 +110,6 @@ def prepareParser():
     args = parser.parse_args()
     return args
 
-def testModel(test_dataloader, model, device, criteria, config):
-    model.eval()    
-    data = next(iter(test_dataloader)).to(device)
-    pe = data.laplacian_eigenvector_pe.unsqueeze(1).expand(-1, config['dataset']['window_size'], -1).to(device)
-    out = model(torch.cat([data.x, pe], dim=2), data.edge_index, data.edge_attr).cpu()
-    data = data.cpu()   
-    print('\nSample test') 
-    prob = softmax(out.detach(), dim=0, dtype=torch.float32).numpy().tolist()
-    trimmed_prob = [float(f"{num:.5f}") for num in prob]
-    print('> model output', trimmed_prob)
-    print(f'> predicted class: {out.argmax()}, actual class: {data.y[0]-1}')
-
-    test_loss = 0
-    preds, actuals = [], []
-    
-    ## test model
-    for batch in test_dataloader:
-        x = batch.x.to(device)
-        laplacian_pe = batch.laplacian_eigenvector_pe.unsqueeze(1).expand(-1, config['dataset']['window_size'], -1).to(device)
-        x = torch.cat([x, laplacian_pe], dim=2) # shape: (n_nodes, time, node_features+PE)
-        edge_index = batch.edge_index.to(device)
-        edge_attr = batch.edge_attr.to(device)
-        
-        out = model(x, edge_index, edge_attr)
-        y = batch.y.to(device)[0]-1 
-        loss = criteria(out, y)
-        test_loss += loss.item()
-
-        preds.append(int(out.argmax()))
-        actuals.append(int(batch.y[0])-1)
-
-    return out, test_loss/len(test_dataloader), f1_score(actuals, preds, average='macro')
-
 def load_model(model, optimizer, logger, config):
     checkpoint_path = os.path.join(config['result_dir'], config['training']['pretrained_model_path'])
     assert os.path.exists(checkpoint_path), 'Provided pretrained model does not exists.'
@@ -172,46 +138,22 @@ def prepareData(config, logger, rank=None, world_size=None):
     dataset = extractData(data_path=config['dataset']['data_path'],
                           data_names=config['dataset']['data_names'],
                           window_size=config['dataset']['window_size'],
+                          stride=config['dataset']['stride'],
                           n_nodes=config['dataset']['n_nodes'],
                           n_edges=config['dataset']['n_edges'],
-                          edge_features=config['dataset']['edge_features'],
                           node_features=config['dataset']['node_features'],
-                          case_range=config['dataset']['case_range'], 
-                          stride=config['dataset']['stride'],
-                          data_portion=config['dataset']['data_portion_from_end'],
+                          edge_features=config['dataset']['edge_features'],
                           ignored_fault_locations=config['dataset']['ignored_fault_locations'],
                           task=config['task'],
-                          current_as_node_features=config['dataset']['current_as_node_features'])
+                          edge_index=config['dataset']['edge_index'],
+                          ignored_fault_types=config['dataset']['ignored_fault_types'],
+                          case_range=config['dataset']['case_range'])
     
     dataset = transformData(k=config['dataset']['k'], dataset=dataset)
     logger.info(f'Dataset Size: {len(dataset)}')
     train_dataset, test_dataset = train_test_split(dataset, test_size=config['dataset']['test_ratio'], random_state=config['random_seed'])
     
-    if config['training']['multi_gpu']:
-        # train_dataloader = DataLoader(train_dataset, 
-        #                               batch_size=1, 
-        #                               num_workers=config['n_workers'], 
-        #                               sampler=DistributedSampler(train_dataset, shuffle=True, rank=rank, num_replicas=world_size, drop_last=True))
-        # train_dataloader = DataLoader(train_dataset,
-        #                         batch_size=1,
-        #                         sampler=DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True, drop_last=True),
-        #                         num_workers=config['n_workers'],
-        #                         pin_memory=True,
-        #                         persistent_workers=True
-        #                     )
-        data_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True, drop_last=True)
-        train_dataloader = DataLoader(
-                                    train_dataset,
-                                    batch_size=1,
-                                    sampler=data_sampler,
-                                    num_workers=config['n_workers'],           # ← disable multiprocessing in dataloader
-                                    pin_memory=False,        # ← avoid the pin memory crash
-                                    drop_last=True
-                                )
-
-    else:    
-        train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=config['n_workers'])
-
+    train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=config['n_workers'])
     test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=config['n_workers']) 
 
     return train_dataloader, test_dataloader  
@@ -231,3 +173,45 @@ def get_optimizer(config, model):
         )
 
     return optimizer
+
+def plot_confusion_matrix(preds, actuals, plot_path):
+
+    # Convert to numpy if torch tensors
+    if isinstance(preds, torch.Tensor):
+        preds = preds.cpu().numpy()
+    if isinstance(actuals, torch.Tensor):
+        actuals = actuals.cpu().numpy()
+
+    # Compute confusion matrix
+    cm = confusion_matrix(actuals, preds)
+    num_classes = cm.shape[0]
+
+    # Create the heatmap
+    fig, ax = plt.subplots()
+    heatmap = ax.pcolormesh(cm, cmap='Blues', edgecolors='k', linewidth=1)
+
+    # Add colorbar
+    plt.colorbar(heatmap, ax=ax)
+
+    # Set ticks and labels
+    tick_labels = [str(i+1) for i in range(num_classes)]
+    ax.set_xticks(np.arange(num_classes) + 0.5)
+    ax.set_yticks(np.arange(num_classes) + 0.5)
+    ax.set_xticklabels(tick_labels, fontsize=12, fontweight='bold')
+    ax.set_yticklabels(tick_labels, fontsize=12, fontweight='bold')
+    ax.set_xlabel('Predicted', fontsize=14, fontweight='bold')
+    ax.set_ylabel('Actual', fontsize=14, fontweight='bold')
+    ax.set_title('Confusion Matrix', fontsize=16, fontweight='bold')
+
+    # Annotate each cell with the numeric value (bold and large)
+    for i in range(num_classes):
+        for j in range(num_classes):
+            ax.text(j + 0.5, i + 0.5, str(cm[i, j]),
+                    ha='center', va='center',
+                    fontsize=12, fontweight='bold', color='black')
+    # Adjust layout and save
+    plt.tight_layout()
+
+    # Save the figure
+    plt.savefig(os.path.join(plot_path,"confusion_matrix.png"))
+    plt.close()
