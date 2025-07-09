@@ -4,6 +4,10 @@ import torch
 from sklearn.metrics import f1_score, recall_score, precision_score
 from utils import *
 
+# import os
+os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
+
+
 def testModel(test_dataloader, model, device, criteria, config):
     model.eval()    
     data = next(iter(test_dataloader)).to(device)
@@ -14,7 +18,7 @@ def testModel(test_dataloader, model, device, criteria, config):
     prob = softmax(out.detach(), dim=0, dtype=torch.float32).numpy().tolist()
     trimmed_prob = [float(f"{num:.5f}") for num in prob]
     print('> model output', trimmed_prob)
-    print(f'> predicted class: {out.argmax()}, actual class: {data.y[0]-1}')
+    print(f'> predicted class: {out.argmax()}, actual class: {data.y[0]}')
 
     test_loss = 0
     preds, actuals = [], []
@@ -28,12 +32,12 @@ def testModel(test_dataloader, model, device, criteria, config):
         edge_attr = batch.edge_attr.to(device)
         
         out = model(x, edge_index, edge_attr)
-        y = batch.y.to(device)[0]-1 
+        y = batch.y.to(device)[0] 
         loss = criteria(out, y)
         test_loss += loss.item()
 
         preds.append(int(out.argmax()))
-        actuals.append(int(batch.y[0])-1)
+        actuals.append(int(batch.y[0]))
 
     return test_loss/len(test_dataloader), preds, actuals
 
@@ -68,7 +72,7 @@ def trainModel(config, train_dataloader, test_dataloader, model, device, logger,
             x = torch.cat([x, laplacian_pe], dim=2) # shape: (n_nodes, time, node_features+PE)
             edge_index = batch.edge_index.to(device) # shape: (2, n_edges)
             edge_attr = batch.edge_attr.to(device) # shape: (n_edges, time, edge_features)
-            y = batch.y.to(device)[0]-1 
+            y = batch.y.to(device)[0] 
 
             out = model(x, edge_index, edge_attr) # shape: (num_fault_types,)
 
@@ -80,7 +84,7 @@ def trainModel(config, train_dataloader, test_dataloader, model, device, logger,
             optimizer.step()
 
             preds.append(int(out.argmax()))
-            actuals.append(int(batch.y[0])-1)
+            actuals.append(int(batch.y[0]))
             i += 1
             logger.debug(f'epoch: {epoch+1}-batch: {i+1} :: loss: {loss.item()}')
 

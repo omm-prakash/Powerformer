@@ -44,7 +44,9 @@ def runProcess(config):
 
     ## prepare logging setup
     logging = logging_setup()
-    logger = get_logger(f'{config['task']}: expt-{expt}', result_dir)
+    # logger = get_logger(f'{config['task']}: expt-{expt}', result_dir)
+    logger = get_logger(f"{config['task']}: expt-{expt}", result_dir)
+
 
     logger.info('')
     logger.info('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')

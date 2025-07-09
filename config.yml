@@ -1,18 +1,18 @@
-n_workers: 0
+n_workers: 10
 random_seed: 11
-result_dir: '/scratch/opsahoo.eee20.itbhu/Thesis'
+result_dir: '/home/rtds/Desktop/Protection Research/Storage'
 test_mode: true
-desc: "Detect Fault: contining expt-4 to all data"
+desc: "Detect Fault: starting training "
 
 task: 'detect' # e.g. "detect" or "locate"
 
 dataset:
-  data_path: '/scratch/opsahoo.eee20.itbhu/Thesis/test_dataset'
-  data_names: ['folder1'] 
+  data_path: '/home/rtds/Desktop/Protection Research/Storage/NEWDATA'
+  data_names: ['microgrid_fault_connected3'] 
   window_size: 25
   stride: 12
-  n_nodes: 6
-  n_edges: 5
+  n_nodes: 7
+  n_edges: 7
   n_edge_features: 3
   n_node_features: 3
   # node_features: ['N1_rms[kV]', 'N2_rms[kV]', 'N3_rms[kV]',     # node 1: 0
@@ -20,26 +20,32 @@ dataset:
   #                 'N7_rms[kV]', 'N8_rms[kV]', 'N9_rms[kV]',     # node 3: 2
   #                 'N16_rms[kV]','N17_rms[kV]', 'N18_rms[kV]',   # node 6: 3
   #                 'N19_rms[kV]',  'N20_rms[kV]', 'N21_rms[kV]'] # node 7: 4
-  edge_index: [[1,1,1,1,1], [0,2,3,4,5]]
+  edge_index: [[0,1,1,2,2,5,5], 
+               [1,2,5,3,6,6,4]]
 
-  edge_features: ['I121A_rms[kA]', 'I121B_rms[kA]', 'I121C_rms[kA]',    # TL 2-1
-                  'I322A_rms[kA]', 'I322B_rms[kA]', 'I322C_rms[kA]',    # TL 2-3
-                  'I423A_rms[kA]', 'I423B_rms[kA]', 'I423C_rms[kA]',    # TL 2-4
-                  'I524A_rms[kA]', 'I524B_rms[kA]', 'I524C_rms[kA]',    # TL 2-5
-                  'I2M5A_rms[kA]', 'I2M5B_rms[kA]', 'I2M5C_rms[kA]']    # TL 2-6
+  edge_features: ['I121A_rms[kA]', 'I121B_rms[kA]', 'I121C_rms[kA]',    # TL 0-1
+                  'I232A_rms[kA]', 'I232B_rms[kA]', 'I232C_rms[kA]',    # TL 1-2
+                  'I264A_rms[kA]', 'I264B_rms[kA]', 'I264C_rms[kA]',    # TL 1-5
+                  'I343A_rms[kA]', 'I343B_rms[kA]', 'I343C_rms[kA]',    # TL 2-3
+                  'S3IA_rms[kA]', 'S3IB_rms[kA]', 'S3IC_rms[kA]',       # TL 2-6
+                  'I765A_rms[kA]', 'I765B_rms[kA]', 'I765C_rms[kA]',    # TL 5-6
+                  'I656A_rms[kA]', 'I656B_rms[kA]', 'I656C_rms[kA]',]   # TL 5-4
+                    
                   
   node_features: ['I121A_rms[kA]', 'I121B_rms[kA]', 'I121C_rms[kA]',    # node 1: 0
-                  'I2M5A_rms[kA]', 'I2M5B_rms[kA]', 'I2M5C_rms[kA]',    # node 2: 2
-                  'I322A_rms[kA]', 'I322B_rms[kA]', 'I322C_rms[kA]',    # node 3: 1
-                  'I423A_rms[kA]', 'I423B_rms[kA]', 'I423C_rms[kA]',    # node 4: 1
-                  'I524A_rms[kA]', 'I524B_rms[kA]', 'I524C_rms[kA]',    # node 5: 1
-                  'I2M5A_rms[kA]', 'I2M5B_rms[kA]', 'I2M5C_rms[kA]']    # node 6: 2
+                  'I232A_rms[kA]', 'I232B_rms[kA]', 'I232C_rms[kA]',    # node 2: 2
+                  'S3IA_rms[kA]', 'S3IB_rms[kA]', 'S3IC_rms[kA]',       # node 3: 2
+                  'I343A_rms[kA]', 'I343B_rms[kA]', 'I343C_rms[kA]',    # node 4: 2
+                  'I656A_rms[kA]', 'I656B_rms[kA]', 'I656C_rms[kA]',    # node 5: 2
+                  'I264A_rms[kA]', 'I264B_rms[kA]', 'I264C_rms[kA]',    # node 6: 2
+                  'I765A_rms[kA]', 'I765B_rms[kA]', 'I765C_rms[kA]',]   # node 7: 1
+                  
 
-  num_fault_types: 7
-  num_fault_locations: 5
-  case_range: [1,1000]  # Using a list instead of a tuple
+  num_fault_types: 8
+  num_fault_locations: 8
+  case_range: [1,100]  # Using a list instead of a tuple
   ignored_fault_locations: [] # Ignored faults locations 
-  ignored_fault_types: [1] # Ignored faults locations 
+  ignored_fault_types: [1] # Ignored faults types 
 
   test_ratio: 0.2
   k: 3 # eigen vectors to consider for PE
@@ -73,10 +79,11 @@ training:
   multi_gpu: false
 
 fault:
-  1: "steady_state"
-  2: "LG-A"
-  3: "LG-B"
+  0: "steady_state"
+  1: "LG-A"
+  2: "LG-B"
   4: "LG-C"
-  5: "LLLG"
-  6: "LLG-AB"
-  7: "LLG-AC"
+  3: "LLG-AB"
+  5: "LLG-AC"
+  6: "LLG-BC"
+  7: "LLLG-ABCG"

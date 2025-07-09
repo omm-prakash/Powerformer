@@ -1,0 +1,100 @@
+# TCP_IP: "10.16.28.91"
+# TCP_PORT: 7777
+# BUFFER_SIZE: 132 #1024 
+
+# edge_features: ['I121A_rms[kA]', 'I121B_rms[kA]', 'I121C_rms[kA]',  # TL1: 1-2
+#                 'I322A_rms[kA]', 'I322B_rms[kA]', 'I322C_rms[kA]',  # TL2: 3-2 
+#                 'I423A_rms[kA]', 'I423B_rms[kA]', 'I423C_rms[kA]',  # TL3: 4-2 
+#                 'I524A_rms[kA]', 'I524B_rms[kA]', 'I524C_rms[kA]',  # TL4: 5-2 
+#                 'I2M5A_rms[kA]', 'I2M5B_rms[kA]', 'I2M5C_rms[kA]']  # TL5: 2-2
+
+# node_features: ['N1_rms[kV]', 'N2_rms[kV]', 'N3_rms[kV]',    # node 1
+#                 'N4_rms[kV]', 'N5_rms[kV]', 'N6_rms[kV]',    # node 2
+#                 # 'N4_rms[kV]', 'N5_rms[kV]', 'N6_rms[kV]',    # node 2
+#                 'N7_rms[kV]', 'N8_rms[kV]', 'N9_rms[kV]',    # node 3
+#                 'N10_rms[kV]', 'N11_rms[kV]', 'N12_rms[kV]', # node 4
+#                 'N13_rms[kV]', 'N14_rms[kV]', 'N15_rms[kV]'] # node 5
+
+TCP_IP: "10.16.28.91"
+TCP_PORT: 7777
+BUFFER_SIZE: 1024 
+
+edge_features: ['I121A_rms[kA]', 'I121B_rms[kA]', 'I121C_rms[kA]',  # TL1: 1-2
+                'I232A_rms[kA]', 'I232B_rms[kA]', 'I232C_rms[kA]',  # TL2: 2-3 
+                'I343A_rms[kA]', 'I343B_rms[kA]', 'I343C_rms[kA]',  # TL3: 3-4 
+                'I264A_rms[kA]', 'I264B_rms[kA]', 'I264C_rms[kA]',  # TL4: 2-6
+                'I765A_rms[kA]', 'I765B_rms[kA]', 'I765C_rms[kA]',  # TL5: 7-6
+                'I656A_rms[kA]', 'I656B_rms[kA]', 'I656C_rms[kA]',  # TL6: 6-5
+                'S3IA_rms[kA]', 'S3IB_rms[kA]', 'S3IC_rms[kA]']     # TL7: 3-7
+
+node_features: ['N1_rms[kV]', 'N2_rms[kV]', 'N3_rms[kV]',    # node 1
+                'N4_rms[kV]', 'N5_rms[kV]', 'N6_rms[kV]',    # node 2
+                'N7_rms[kV]', 'N8_rms[kV]', 'N9_rms[kV]',    # node 3
+                'N10_rms[kV]', 'N11_rms[kV]', 'N12_rms[kV]', # node 4
+                'N16_rms[kV]', 'N17_rms[kV]', 'N18_rms[kV]', # node 6
+                'N19_rms[kV]', 'N20_rms[kV]', 'N21_rms[kV]', # node 7
+                'N13_rms[kV]', 'N14_rms[kV]', 'N15_rms[kV]'] # node 5
+
+fault_details: ['FAULT_LINE', 'FAULT_TRIP', 'FAULT_TYPE']
+
+# fault_details: ['FAULT_TYPE', 'FAULT_TRIP', 'FAULT_LINE']
+
+# data_path: 'C:\Users\PS LAB\Desktop\Protection Rsearch\Storage\Data'
+data_path: 'd:\New folder (5)\desktop\Protection Rsearch\NEWDATA'
+
+convert_fault_type(rtds->python):
+  0: 1
+  1: 2
+  2: 3
+  4: 4
+  7: 5
+  3: 6
+  6: 7
+  5: 8
+
+convert_fault_type(python->rtds):
+  1: 0
+  2: 1
+  3: 2
+  4: 4
+  5: 7
+  6: 3
+  7: 6
+  8: 5
+
+fault_types:
+  1: "steady_state"
+  2: "LG-A"
+  3: "LG-B"
+  4: "LG-C"
+  5: "LLLG"
+  6: "LLG-AB"
+  7: "LLG-BC"
+  8: "LLG-AC"
+
+
+sample_size: 1200
+# format: '>fffffffffffffffiiifffffffffffffff'
+# send_data_format: '>iiiifff' #ffffffff' # configure accroding to "GTNET-SKT" configuration
+send_data_format: '>iiiifff'
+data_name: 'microgrid_fault_connected5(pset2=0.8, pset3=0.7)'
+Remote_Control: true # false
+fault_trigger_interation: 300
+data_collection_start_iteration: 150
+trip_window_shift: 0
+
+variables: 
+  Remote_FAULT_LINE: [1,2,3,4,5,6,7] #1-5
+  Remote_FAULT_TYPE: [2,3,4,5,6,7,8] #1-8
+  Remote_FAULT_DURATION: [1,1.5] #,1] # in sec
+
+  # TempPV1: [25,35,50]
+  # TempPV2: [25,35,50] #, 38] #[25, 35, 45, 65, 75]
+  # TempPV3: [25] #, 38] #[25, 35, 45, 65, 75]
+
+  # InsolPV1: [500,750,1000] #, 1000]
+  # InsolPV2: [500,750,1000] #, 1000]
+  # InsolPV3: [500,1000] #, 1000]
+
+  PSET_LOAD: [0.7,1,1.5] #, 3, 5]
+  QSET_LOAD: [0,0.5] #, 1]
